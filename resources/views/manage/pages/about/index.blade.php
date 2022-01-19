@@ -1,7 +1,6 @@
 @extends('manage.layouts.master')
 @section('title', 'Haqqımızda')
 @section('content')
-<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
     <section class="content">
         <form action="{{ route('manage.about.save') }}" method="post" enctype="multipart/form-data">
             @csrf
@@ -13,7 +12,7 @@
                 <div class="clearfix"></div>
             </div>
             <div class="panel panel-default">
-                <textarea id="about" name="about" placeholder="Your text . . .">{{ old('about', $about->about) }}</textarea>
+                <textarea id="about" name="about" placeholder="Your text . . .">{{ old('about', $about ? $about->about : null) }}</textarea>
             </div>
             <div>
                 <div class="pull-right">
@@ -26,13 +25,7 @@
 @endsection
 
 @section('footer')
-<script>
-    CKEDITOR.replace('about', {
-        fullPage: true,
-        allowedContent: true,
-        autoGrow_onStartup: true,
-        enterMode: CKEDITOR.ENTER_BR
-    });
-  </script>
+@include('manage.layouts.partials.ckeditorService',['uploadUrl'=>route('ckeditorProductUpload'),'editor'=>"about"])
+
     
 @endsection

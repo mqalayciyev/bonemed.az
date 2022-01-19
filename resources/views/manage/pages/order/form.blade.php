@@ -74,6 +74,27 @@
                                            value="{{ old('mobile', $entry->mobile) }}">
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="text" class="form-control" id="email" placeholder="Email" name="email"
+                                        value="{{ old('email', $entry->email) }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="city">Şəhər</label>
+                                    <input type="text" class="form-control" id="city" placeholder="Şəhər" name="city"
+                                        value="{{ old('city', $entry->city) }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="zip_code">Poçt Kodu</label>
+                                    <input type="text" class="form-control" id="zip_code" placeholder="Şəhər" name="zip_code"
+                                        value="{{ old('zip_code', $entry->zip_code) }}">
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -86,26 +107,44 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-xs-12">
+                                <p style="color: red; font-weight: bold;" >
+                                    {{ old('status', $entry->status) == 'Payment is expected' ? 'Müştəri sifarişin ödənişini tamamlamayıb. Ödəniş tamamlanana qədər statusu dəyişdirə biməiniz.' : '' }}
+                                    </p>
+                            </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="status">@lang('admin.Status')</label>
-                                    <select name="status" id="status" class="form-control">
-                                        <option value="Your order has been received" {{ old('status', $entry->status) == 'Your order has been received' ? 'selected' : '' }}>
-                                            @lang('admin.Your order has been received')
+                                    
+                                    
+                                    <select name="status" id="status" class="form-control" 
+                                        {{ old('status', $entry->status) == 'Payment is expected' ? 'disabled' : '' }}>
+                                        <option value="Your order has been received"
+                                            {{ old('status', $entry->status) == 'Your order has been received' ? 'selected' : '' }}>
+                                            @lang('admin.Pending')
                                         </option>
-                                        <option value="Payment approved" {{ old('status', $entry->status) == 'Payment approved' ? 'selected' : '' }}>
+                                        <option value="Payment approved"
+                                            {{ old('status', $entry->status) == 'Payment approved' ? 'selected' : '' }}>
                                             @lang('admin.Payment approved')
                                         </option>
-                                        <option value="Cargoed" {{ old('status', $entry->status) == 'Cargoed' ? 'selected' : '' }}>
+                                        <option value="Cargoed"
+                                            {{ old('status', $entry->status) == 'Cargoed' ? 'selected' : '' }}>
                                             @lang('admin.Cargoed')
                                         </option>
-                                        <option value="Order completed" {{ old('status', $entry->status) == 'Order completed' ? 'selected' : '' }}>
+                                        <option value="Order completed"
+                                            {{ old('status', $entry->status) == 'Order completed' ? 'selected' : '' }}>
                                             @lang('admin.Order completed')
                                         </option>
-                                        <option value="Your order is canceled" {{ old('status', $entry->status) == 'Your order is canceled' ? 'selected' : '' }}>
+                                        <option value="Your order is canceled"
+                                            {{ old('status', $entry->status) == 'Your order is canceled' ? 'selected' : '' }}>
                                             @lang('admin.Your order is canceled')
                                         </option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <p style="color: red;">*Sifariş statusu "Ləğv edildi" olaraq seçildiyi halda məhsullarının sayı stokdakı məhsul sayına geri əlavə edilir</p>
                                 </div>
                             </div>
                         </div>
@@ -130,11 +169,11 @@
                     <h3>Sipariş (SP-{{ $entry->id }})</h3>
                     <table class="table table-bordererd table-hover">
                         <tr>
-                            <th colspan="2">Ürün</th>
-                            <th>Tutar</th>
-                            <th>Adet</th>
-                            <th>Ara Toplam</th>
-                            <th>Durum</th>
+                            <th colspan="2">Məhsul</th>
+                                <th>Qiyməti</th>
+                                <th>Miqdar</th>
+                                <th>Ümumi qiymət</th>
+                                <th>Status</th>
                         </tr>
                         @foreach($entry->cart->cart_products as $cart_product)
                         
@@ -153,16 +192,34 @@
                                 <td>{{ $cart_product->amount }}</td>
                                 <td>{{ $cart_product->piece }}</td>
                                 <td>{{ $cart_product->amount * $cart_product->piece }}</td>
-                                <td>{{ $cart_product->status }}</td>
+                                <td>
+                                    @if ($entry->status == 'Payment is expected')
+                                        @lang('content.Payment is expected')
+                                    @elseif($entry->status=='Your order has been received')
+                                        @lang('admin.Pending')
+                                    @elseif($entry->status=='Payment approved')
+                                        @lang('content.Payment approved')
+                                    @elseif($entry->status=='Cargoed')
+                                        @lang('content.Cargoed')
+                                    @elseif($entry->status=='Order completed')
+                                        @lang('content.Order completed')
+                                    @elseif($entry->status=='Your order is canceled')
+                                        @lang('content.Your order is canceled')
+                                    @else
+                                        {{ $entry->status }}
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                         <tr>
-                            <th colspan="4" class="text-right">Toplam Tutar</th>
-                            <td colspan="2">{{ $entry->order_amount }} ₺</td>
+                            <th colspan="4" class="text-right">Çatdırılma</th>
+                            <td colspan="2">
+                                {{ $entry->shipping }} ₼
+                            </td>
                         </tr>
                         <tr>
-                            <th colspan="4" class="text-right">Toplam Tutar (KDV'li)</th>
-                            <td colspan="2">{{ $entry->order_amount*((100+config('cart.tax'))/100) }} ₺</td>
+                            <th colspan="4" class="text-right">Toplam Tutar</th>
+                            <td colspan="2">{{ $entry->order_amount }} ₺</td>
                         </tr>
                         <tr>
                             <th colspan="4" class="text-right">Sipariş Durumu</th>
@@ -180,46 +237,29 @@
 @endsection
 
 @section('footer')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js" integrity="sha512-ToRWKKOvhBSS8EtqSflysM/S7v9bB9V0X3B1+E7xo7XZBEZCPL3VX5SFIp8zxY19r7Sz0svqQVbAOx+QcLQSAQ==" crossorigin="anonymous"></script>
 <script>
-        function pdfFromHTML(data) {
-            var pdf = new jsPDF('p', 'pt', 'letter');
-            pdf.setFont("Times New Roman");
-            pdf.setFontType("normal");
-            source = data;
-            specialElementHandlers = {
-                '#bypassme': function (element, renderer) {
-                    return true
-                }
-            };
-            margins = {
-                top: 40,
-                bottom: 40,
-                left: 40,
-                width: 520
-            };
-            pdf.fromHTML(
-            source,
-            margins.left,
-            margins.top, {
-                'width': margins.width,
-                'elementHandlers': specialElementHandlers
-            },
 
-            function (dispose) {
-                pdf.save('invoice.pdf');
-            }, margins);
-        }
-        $(document).on('click', '.view_invoice', function(){
+        $(document).on('click', '.view_invoice', function() {
             let id = $(this).attr('data-id');
             $.ajax({
                 url: "{{ route('manage.order.invoice_view') }}",
-                type: "POST",
-                data: {"_token" : "{{ csrf_token() }}", id},
-                success:  function(data){
-                    console.log(data);
-                    pdfFromHTML(data)
-                    
+                type: "GET",
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                data: {
+                    id
+                },
+                success: function(data) {
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'invoice.pdf';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+
                 }
             })
         })

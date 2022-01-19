@@ -945,6 +945,7 @@ textarea.input {
 .product.product-single {
   margin-top: 15px;
   margin-bottom: 15px;
+  max-width: max-content;
   -webkit-transition: 0.3s all;
   transition: 0.3s all;
 }

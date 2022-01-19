@@ -42,7 +42,7 @@
                                     </li>
                                     <li class="{{ request()->is('orders') || request()->is('*/orders/*') ? 'active' : '' }}"><a
                                             href="{{ route('orders') }}">
-                                            Siparişlerim
+                                            Sifarişlərim
                                         </a></li>
                                     <li class="{{ request()->is('membership') ? 'active' : '' }}"><a
                                             href="{{ route('user.membership') }}">

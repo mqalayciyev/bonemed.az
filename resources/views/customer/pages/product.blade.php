@@ -247,7 +247,11 @@
                     </div>
                 </div>
                 <!-- section title -->
-                <div class="products_pfy  col-md-12"></div>
+                <div class="products_pfy  col-md-12">
+                    <div class="text-center">
+                        <img src="{{ asset('img/reload.gif') }}" width="250"/>
+                    </div>
+                </div>
             </div>
             <!-- /row -->
         </div>
@@ -267,6 +271,7 @@
                     method: 'GET',
                     data: {product: dynamic_product},
                     success: function (data) {
+                        console.log(data)
                         $('.' + dynamic_product).html(data);
                     }
                 });

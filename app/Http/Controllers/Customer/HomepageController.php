@@ -30,17 +30,32 @@ class HomepageController extends Controller
     {
 
         $dynamic_product = request('product');
-        if ($dynamic_product == 'products_dotd') {
+        if ($dynamic_product == 'products_deal_of_day') {
             $products = Product::select('product.*')
                 ->leftJoin('product_detail', 'product_detail.product_id', 'product.id')
-                ->where('product_detail.show_deals_of_the_day', 1)
+                ->where('product.discount', '!=', null)
                 ->orderBy('updated_at', 'desc')
                 ->take(4)
                 ->get();
 
             return view('customer.pages.home_products', compact('products'));
         }
-        if ($dynamic_product == 'products_l') {
+        if ($dynamic_product == 'products_best_selling') {
+            if(request('length') == ""){
+                $length = 8;
+            }
+            else{
+                $length = request('length');
+            }
+
+            $products = Product::select('product.*')
+                ->leftJoin('product_detail', 'product_detail.product_id', 'product.id')
+                ->orderBy('product.best_selling', 'desc')
+                ->take($length)
+                ->get();
+            return view('customer.pages.home_products', compact('products', 'dynamic_product'));
+        }
+        if ($dynamic_product == 'products_latest') {
             if(request('length') == ""){
                 $length = 8;
             }
@@ -57,28 +72,29 @@ class HomepageController extends Controller
                 ->get();
             return view('customer.pages.home_products', compact('products'));
         }
-        if ($dynamic_product == 'products_pfy') {
-            $your_products = explode("-", session('your_products'));
+        if ($dynamic_product == 'products_last_view') {
             $products = [];
-            
-            for($i=0; $i<count($your_products); $i++){
-                $products2 = Product::select('product.*')
+            if (session()->has('your_products')) {
+                $your_products = explode("-", session('your_products'));
+
+                $products = Product::select('product.*')
+                    ->leftJoin('product_detail', 'product_detail.product_id', 'product.id')
+                    ->whereIn('product.id', $your_products)
+                    ->orderBy('updated_at', 'desc')
+                    ->take(4)
+                    ->get();
+            }
+            return view('customer.pages.home_products', compact('products', 'dynamic_product'));
+        }
+        if ($dynamic_product == 'products_pfy') {
+            $products = Product::select('product.*')
                 ->leftJoin('product_detail', 'product_detail.product_id', 'product.id')
-                ->where('product.id', $your_products[$i])
+                ->where('product_detail.show_picked_for_you', 1)
                 ->orderBy('updated_at', 'desc')
                 ->take(4)
                 ->get();
-                
-                if(!in_array($products2[0], $products)){
-                    array_push($products, $products2[0]);
-                }
-            }
-            if(count($products) > 0){
-                return view('customer.pages.home_products', compact('products'));
-            }
-            else{
-                echo "empty";
-            }
+
+            return view('customer.pages.home_products', compact('products'));
             
         }
     }

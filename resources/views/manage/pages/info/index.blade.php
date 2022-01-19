@@ -96,6 +96,22 @@
                                     <input type="text" class="form-control" placeholder="Pinterest link" name="pinterest" value="{{ old('pinterest', $website_info->pinterest) }}">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="payment_door">Ödəniş məlumatı:</label>
+                                <textarea name="payment_door" class="form-control" id="payment_door" placeholder="Ödəniş məlumatı">{{ old('payment_door', $website_info->payment_door) }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="delivery">Çatdırılma şərti:</label>
+                                <input type="text" class="form-control" placeholder="Çatdırılma şərti" id="delivery" name="delivery" value="{{ old('delivery', $website_info->delivery) }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="standart_delivery_amount">Standart çatdırılma məbləği:</label>
+                                <input type="text" class="form-control" placeholder="Standart çatdırılma məbləği" id="standart_delivery_amount" name="standart_delivery_amount" value="{{ old('standart_delivery_amount', $website_info->standart_delivery_amount) }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="fast_delivery_amount">Sürətli çatdırılma məbləği:</label>
+                                <input type="text" class="form-control" placeholder="Sürətli çatdırılma məbləği" id="fast_delivery_amount" name="fast_delivery_amount" value="{{ old('fast_delivery_amount', $website_info->fast_delivery_amount) }}">
+                            </div>
                         </div>
                     </div>
                 </div>

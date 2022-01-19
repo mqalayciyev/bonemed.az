@@ -104,7 +104,7 @@
                     </div>
                 </div>
             </div>
-            <div class="pull-left desktop-navbar">
+            <div class="pull-left desktop-navbar" style="width: 60%;">
 
                 <!-- Logo -->
         
@@ -116,7 +116,7 @@
                 </div>
 
                 <!-- Search -->
-                <div class="header-search">
+                <div class="header-search" style="width: 70%;">
                     <form action="{{ route('search_product') }}" method="post" autocomplete="off">
                         {{ csrf_field() }}
                         <input class="input" type="search" style="padding: 0 40px;" name="wanted"

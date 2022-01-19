@@ -146,40 +146,6 @@
                         </ul>
                     </div>
 
-                    <!-- aside widget -->
-                    <div class="aside ">
-                        <h3 class="aside-title">@lang('content.Filter By Size'):</h3>
-                        <ul class="list-links" id="filter-size">
-                            <li><a class="filter_size" href="javascript:void(0)" id=""><label for="size_s" style="font-size: 1.8rem; font-weight: 200;"><input id="size_s" type="checkbox" class="minimal" style="margin-right: 5px; vertical-align: baseline;" name="size_s"
-                                value="1">S</label></a></li>
-                            <li><a class="filter_size" href="javascript:void(0)" id=""><label for="size_xs" style="font-size: 1.8rem; font-weight: 200;"><input id="size_xs" type="checkbox" class="minimal" style="margin-right: 5px;" name="size_xs"
-                                value="1">XS</label></a></li>
-                            <li><a class="filter_size" href="javascript:void(0)" id=""><label for="size_m" style="font-size: 1.8rem; font-weight: 200;"><input id="size_m" type="checkbox" class="minimal" style="margin-right: 5px;" name="size_m"
-                                value="1">M</label></a></li>
-                            <li><a class="filter_size" href="javascript:void(0)" id=""><label for="size_l" style="font-size: 1.8rem; font-weight: 200;"><input id="size_l" type="checkbox" class="minimal" style="margin-right: 5px;"name="size_l"
-                                value="1">L</label></a></li>
-                            <li><a class="filter_size" href="javascript:void(0)" id=""><label for="size_xl" style="font-size: 1.8rem; font-weight: 200;"><input id="size_xl" type="checkbox" class="minimal" style="margin-right: 5px;" name="size_xl"
-                                value="1">XL</label></a></li>
-                            <li><a class="filter_size" href="javascript:void(0)" id=""><label for="size_sl" style="font-size: 1.8rem; font-weight: 200;"><input id="size_sl" type="checkbox" class="minimal" style="margin-right: 5px;" name="size_sl"
-                                value="1">SL</label></a></li>
-                        </ul>
-                    </div>
-                    <!-- aside widget -->
-                    <div id="filter-by-color" class="aside ">
-                        <h3 class="aside-title">@lang('content.Filter By Color'):</h3>
-                        <div class="row" style="display: flex; flex-wrap: wrap;">
-                            <label for="" class="colors filter_color"><span data-color="color_red" style="background-color: #ff0000;"></span></label>
-                            <label for="" class="colors filter_color"><span data-color="color_black" style="background-color: #000000;"></span></label>
-                            <label for="" class="colors filter_color" style="border-color: #c2c2c2;"><span data-color="color_white" style="background-color: #ffffff;"></span></label>
-                            <label for="" class="colors filter_color"><span data-color="color_green" style="background-color: #008000;"></span></label>
-                            <label for="" class="colors filter_color"><span data-color="color_orange" style="background-color: #ffa500;"></span></label>
-                            <label for="" class="colors filter_color"><span data-color="color_blue" style="background-color: #0000ff;"></span></label>
-                            <label for="" class="colors filter_color"><span data-color="color_pink" style="background-color: #ff009d;"></span></label>
-                            <label for="" class="colors filter_color"><span data-color="color_yellow" style="background-color: #e5ff00;"></span></label>
-                            <label for="" class="colors filter_color"><span data-color="color_cyan" style="background-color: #00e1ff;"></span></label>
-                            <label for="" class="colors filter_color"><span data-color="color_grey" style="background-color:  #808080;"></span></label>
-                        </div>
-                    </div>
                     <a href="{{ route('category', $slug_category_name) }}" class="primary-btn">@lang('content.Clear All')</a>
                 </div>
                 <div id="main" class="col-md-9">

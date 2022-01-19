@@ -44,10 +44,10 @@ class UserController extends Controller
             'mobile' => request('mobile'),
             'password' => Hash::make(request('password')),
             'activation_key' => Str::random(60),
-            'is_active' => 0
+            'is_active' => 1
         ]);
 
-        Mail::to(request('email'))->send(new UserRegistration($user));
+        // Mail::to(request('email'))->send(new UserRegistration($user));
         auth()->login($user);
 
         return redirect()->route('homepage');

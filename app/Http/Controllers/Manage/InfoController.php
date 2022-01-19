@@ -22,7 +22,7 @@ class InfoController extends Controller
 
             $filename = 'logo.' . $logo->extension();
 
-            $destinationPath = 'assets/img/';
+            $destinationPath = 'img/';
             $logo->move($destinationPath, $filename);
             $data['logo'] = $filename;
 
@@ -32,7 +32,7 @@ class InfoController extends Controller
 
             $filename = 'favicon.' . $logo->extension();
 
-            $destinationPath = 'assets/img/';
+            $destinationPath = 'img/';
             $logo->move($destinationPath, $filename);
             $data['favicon'] = $filename;
         }

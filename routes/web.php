@@ -79,6 +79,8 @@ Route::namespace('Customer')->group(function () {
             Route::post('/change_password', 'UserController@change_password')->name('user.change_password');
         });
     });
+
+    Route::post('/payment/return/{orderid}', 'PaymentController@paymentPageReturn')->name('payment.return');
 });
 
 Route::namespace('Manage')->prefix('manage')->group(function () {
@@ -267,8 +269,7 @@ Route::namespace('Manage')->prefix('manage')->group(function () {
             Route::get('/edit/{id}', 'OrderController@form')->name('manage.order.edit');
             Route::post('/save/{id?}', 'OrderController@save')->name('manage.order.save');
             Route::get('/delete/{id}', 'OrderController@delete')->name('manage.order.delete');
-            Route::post('/invoice_view', 'OrderController@invoice_view')->name('manage.order.invoice_view');
-            Route::post('/invoice_print', 'OrderController@invoice_print')->name('manage.order.invoice_print');
+            Route::get('/invoice_view', 'InvoiceController@index')->name('manage.order.invoice_view');
         });
     });
     
@@ -386,5 +387,9 @@ Route::namespace('Usermanage')->prefix('usermanage')->group(function () {
                 Route::post('/save/{id?}', 'OrderController@save')->name('usermanage.order.save');
                 Route::get('/delete/{id}', 'OrderController@delete')->name('usermanage.order.delete');
             });
+
+            Route::post("ckeditor_slider_upload", 'CommonControllers@ckEditorSliderUpload')->name("ckeditorSliderUpload");
+            Route::post("ckeditor_products_upload", 'CommonControllers@ckEditorProductUpload')->name("ckeditorProductUpload");
+    
     });
 });

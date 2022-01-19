@@ -11,7 +11,7 @@ class Order extends Model
     protected $table = 'order';
     protected $fillable = [
         'cart_id', 'order_amount', 'status',
-        'first_name', 'last_name', 'address', 'phone', 'mobile', 'bank', 'installment_number'
+        'first_name', 'last_name', 'email', 'address', 'city', 'country', 'zip_code', 'phone', 'mobile', 'bank', 'installment_number', 'shipping'
     ];
 
     public function cart()

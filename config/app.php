@@ -165,6 +165,8 @@ return [
 
         Yajra\DataTables\DataTablesServiceProvider::class,
         // Barryvdh\DomPDF\ServiceProvider::class,
+
+        LaravelDaily\Invoices\InvoiceServiceProvider::class,
     ],
 
     /*
@@ -218,6 +220,8 @@ return [
 
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         // 'PDF' => Barryvdh\DomPDF\Facade::class,
+
+        'Invoice' => LaravelDaily\Invoices\Facades\Invoice::class
     ],
 
 ];

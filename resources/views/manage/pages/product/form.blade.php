@@ -304,15 +304,6 @@
                                                     <textarea class="form-control" id="product_description"
                                                               placeholder="@lang('admin.Description')"
                                                               name="product_description">{{ old('product_description', $entry->product_description) }}</textarea>
-                                                              
-                                                    <script>
-                                                        CKEDITOR.replace('product_description', {
-                                                            fullPage: true,
-                                                            allowedContent: true,
-                                                            autoGrow_onStartup: true,
-                                                            enterMode: CKEDITOR.ENTER_BR
-                                                        });
-                                                    </script>
                                                 </div>
                                             </div>
                                         </div>
@@ -601,6 +592,7 @@
     </form>
 @endsection
 @section('footer')
+    @include('manage.layouts.partials.ckeditorService',['uploadUrl'=>route('ckeditorProductUpload'),'editor'=>"product_description"])
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/i18n/az.js"></script>
     <script>
 

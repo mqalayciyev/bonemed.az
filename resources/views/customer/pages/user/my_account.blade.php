@@ -3,14 +3,8 @@
 
     <div class="accountContent">
         <span class="accountTitle">
-            @if (auth()->check())
-                {{ 'Sayın, ' . ucwords(auth()->user()->first_name) }}
-            @else
-                @lang('content.Account.Home.Greetings', ['fullName' => "Guest" ])
-            @endif
+            {{ 'Salam, ' . ucwords(auth()->user()->first_name) }}
         </span>
-        <p>{{ config('app.name')}}’dan verdiğiniz siparişleri, tedarik ve kargo durumlarını, kazandığınız puanları, üyelik
-            bilgilerinizi, buradan görüntüleyebilir ve güncelleyebilirsiniz.</p>
         <div class="clearfix">
             <a href="{{ route('orders') }}" class="buttonAccount">
                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
@@ -28,13 +22,13 @@
             <p></p>
             <ul>
                 <li>
-                    <span><strong>Ünvanı:</strong> {{ old('address', $website_info->address) }}</span>
+                    <span><strong>Ünvan:</strong> {{ old('address', $website_info->address) }}</span>
                 </li>
                 <li>
-                    <span><strong>Telefon:</strong> <a href="{{ old('mobile', $website_info->mobile) }}">{{ old('mobile', $website_info->mobile) }}</a> (Çağrı Mərkəzi)</span>
+                    <span><strong>Telefon:</strong> <a href="tel:{{ old('mobile', $website_info->mobile) }}">{{ old('mobile', $website_info->mobile) }}</a></span>
                 </li>
                 <li>
-                    <span><strong>E-posta:</strong> <a href="mailto:{{ old('email', $website_info->email) }}">{{ old('email', $website_info->email) }}</a></span>
+                    <span><strong>E-poçt:</strong> <a href="mailto:{{ old('email', $website_info->email) }}">{{ old('email', $website_info->email) }}</a></span>
                 </li>
             </ul>
         </div>

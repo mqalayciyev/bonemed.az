@@ -156,7 +156,28 @@
                         <h2 class="title">@lang('content.Deals Of The Day')</h2>
                     </div>
                 </div>
-                <div class="products_dotd col-md-12"></div>
+                <div class="products_deal_of_day col-md-12">
+                    <div class="text-center">
+                        <img src="{{ asset('img/reload.gif') }}" width="250"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="section-title">
+                        <h2 class="title">Ən çox satılanlar</h2>
+                    </div>
+                </div>
+                <div class="products_best_selling col-md-12">
+                    <div class="text-center">
+                        <img src="{{ asset('img/reload.gif') }}" width="250"/>
+                    </div>
+                </div>
+                <div class="text-center col-md-12" style="margin-bottom: 20px;">
+                    <button type="submit" class="primary-btn more-products-b" style="width: 17rem;">
+                        <i class="fa fa-arrow-down"></i> Daha Çox Göstər
+                    </button>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -164,9 +185,13 @@
                         <h2 class="title">@lang('content.Latest Products')</h2>
                     </div>
                 </div>
-                <div class="products_l col-md-12"></div>
+                <div class="products_latest col-md-12">
+                    <div class="text-center">
+                        <img src="{{ asset('img/reload.gif') }}" width="250"/>
+                    </div>
+                </div>
                 <div class="text-center col-md-12" style="margin-bottom: 20px;">
-                    <button type="submit" class="primary-btn more-products" style="width: 17rem;">
+                    <button type="submit" class="primary-btn more-products--l" style="width: 17rem;">
                         <i class="fa fa-arrow-down"></i> Daha Çox Göstər
                     </button>
                 </div>
@@ -177,7 +202,11 @@
                         <h2 class="title">Sizin baxdığınız</h2>
                     </div>
                 </div>
-                <div class="products_pfy col-md-12"></div>
+                <div class="products_last_view col-md-12">
+                    <div class="text-center">
+                        <img src="{{ asset('img/reload.gif') }}" width="250"/>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- /container -->
@@ -188,9 +217,10 @@
     <script>
         $(function () {
 
-            products('products_dotd');
-            products('products_l');
-            products('products_pfy');
+            products('products_deal_of_day');
+            products('products_best_selling');
+            products('products_latest');
+            products('products_last_view');
 
             function products(dynamic_product, length) {
                 $.ajax({
@@ -201,6 +231,7 @@
                         if(data == 'empty'){
                             $(".your_products").css('display', 'none');
                         }
+                        console.log(data)
                         $('.' + dynamic_product).html(data);
                     }
                 });
@@ -217,10 +248,15 @@
                     }
                 });
             })
-            $(document).on('click', '.more-products', function(){
+            $(document).on('click', '.more-products-b', function(){
+                let old_length = $('.products_best_selling').find('.modal').length
+                let new_length = old_length+8;
+                products('products_best_selling', new_length);
+            })
+            $(document).on('click', '.more-products-l', function(){
                 let old_length = $('.products_l').find('.modal').length
                 let new_length = old_length+8;
-                products('products_l', new_length);
+                products('products_latest', new_length);
             })
 
             $(document).on('click', '.add-to-compare', function(){

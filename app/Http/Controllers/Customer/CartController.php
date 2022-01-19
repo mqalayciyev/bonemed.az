@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Cart as CartModel;
 use App\Models\CartProduct;
+use App\Models\Info;
 use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Validator;
@@ -18,6 +19,7 @@ class CartController extends Controller
 
     public function my_cart()
     {
+        
         $output = '';
         if (count(Cart::content()) > 0) {
             $output .= '<div data-v-eb8115a6="" class="Cart-Wrapper">
@@ -140,16 +142,6 @@ $output .= '<a href="' . route('payment') . '"><button type="button" class="Chec
     <div class="CartBox-Title">
         <div class="Title">Sifariş detalları</div>
     </div>
-    <div class="CartBox-Content">
-        <div class="Content">
-            <div>
-                <span
-                    >' . __('content.SHIPPING') . '</span
-                ><em>' . __('content.Free Shipping') . '</em>
-            </div>
-            <!---->
-        </div>
-    </div>
     <div class="CartBox-Footer">
         <div class="Footer">
             <div>
@@ -178,9 +170,36 @@ $output .= '<a href="' . route('payment') . '"><button type="button" class="Chec
 
     public function update_cart()
     {
+        
         $piece = request()->get('piece');
         $rowID = request()->get('rowID');
+
+
+        
+        $cart = Cart::get($rowID);
+        $product = Product::find($cart->id);
+
+        if($piece > $product->stok_piece){
+            $piece = $product->stok_piece;
+        }
+        
+        
+
         Cart::update($rowID, $piece);
+        if (auth()->check()) {
+            if($piece <= 0){
+                $active_cart_id = session('active_cart_id');
+                CartProduct::where('cart_id', $active_cart_id)->where('product_id', $product->id)->delete();
+            }
+            else{
+                $active_cart_id = session('active_cart_id');
+                CartProduct::updateOrCreate(
+                    ['cart_id' => $active_cart_id, 'product_id' => $product->id],
+                    ['piece' => $piece]
+                );
+            }
+            
+        }
         $cart_count = Cart::count();
         echo $cart_count;
     }
@@ -235,7 +254,7 @@ $output .= '<a href="' . route('payment') . '"><button type="button" class="Chec
             }
             CartProduct::updateOrCreate(
                 ['cart_id' => $active_cart_id, 'product_id' => $product->id],
-                ['piece' => $cartItem->qty, 'amount' => $product->sale_price, 'status' => 'Pending']
+                ['piece' => $cartItem->qty, 'amount' => $product->sale_price, 'cart_status' => 'Pending']
             );
         }
         
@@ -287,11 +306,7 @@ $output .= '<a href="' . route('payment') . '"><button type="button" class="Chec
 
     public function delete()
     {
-        if (auth()->check()) {
-            $active_cart_id = session('active_cart_id');
-            $cartItem = Cart::get(request()->get('rowID'));
-            CartProduct::where('cart_id', $active_cart_id)->where('product_id', $cartItem->id)->delete();
-        }
+        
         Cart::remove(request()->get('rowID'));
     }
 

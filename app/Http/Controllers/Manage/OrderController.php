@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\OrderStatus;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\CartProduct;
+use App\Models\Product;
 use App\User;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
@@ -17,21 +19,6 @@ class OrderController extends Controller
 {
     public function index()
     {
-        // if (request()->filled('wanted')) {
-        //     request()->flash();
-        //     $wanted = request('wanted');
-        //     $list = Order::with('cart.user')->where('name', 'like', "%$wanted%")
-        //         ->orWhere('id', 'like', "%$wanted%")
-        //         ->orderByDesc('created_at')
-        //         ->paginate(8)
-        //         ->appends('wanted', $wanted);
-        // } else {
-        //     request()->flush();
-        //     $list = Order::with('cart.user')
-        //         ->orderByDesc('created_at')
-        //         ->paginate(8);
-        // }
-        // return view('manage.pages.order.index', compact('list'));
         return view('manage.pages.order.index');
     }
     public function index_data()
@@ -49,6 +36,9 @@ class OrderController extends Controller
             ->addColumn('SP', function ($row) {
                 return 'SP-' . $row->id;
                 
+            })
+            ->editColumn('status', function ($row) {
+                return __('content.' . $row->status);
             })
             ->addColumn('action', function ($row) {
                 return '<div>
@@ -82,7 +72,6 @@ class OrderController extends Controller
             'last_name' => 'required',
             'address' => 'required',
             'mobile' => 'required',
-            'status' => 'required',
         ]);
         $cart_id = request('cart_id');
         $user_id = Cart::select('user_id')->where('id', $cart_id)->first();
@@ -91,11 +80,25 @@ class OrderController extends Controller
         
         $data = request()->only('first_name', 'last_name', 'address', 'phone', 'mobile', 'status');
         if ($id > 0) {
+
             $entry = Order::where('id', $id)->firstOrFail();
-            $entry->update($data);
+            if(request('status') == 'Your order is canceled'){
+                $cartProduct = CartProduct::select('product_id', 'piece')->where('cart_id', $cart_id)->get();
+                foreach ($cartProduct as $value) {
+                    $product = Product::where('id', $value->product_id)->first();
+                    // return $product;
+                    if($product){
+                        $stok = $product->stok_piece + $value->piece;
+                        $product->update(['stok_piece' => $stok]);
+                    }
+                }
+            }
+
+            Order::where('id',  $id)->update($data);
+            $order = Order::with('cart.cart_products.product')->find($id);
+            // Mail::to($user->email)->send(new OrderStatus($order));
         }
-        $order = Order::where('id', $id)->first();
-        Mail::to($user->email)->send(new OrderStatus($order));
+
         return redirect()
             ->route('manage.order.edit', $entry->id)
             ->with('message_type', 'success')

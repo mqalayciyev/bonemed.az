@@ -38,8 +38,7 @@
                         <li><a href="/account">@lang('footer.My Account')</a></li>
                         <li><a href="/my_wish_list">@lang('footer.My Wishlist')</a></li>
                         <li><a href="/compare">@lang('footer.Compare')</a></li>
-                        <li><a href="/cart">Checkout</a></li>
-                        <li><a href="/user/sign-in">@lang('footer.Login')</a></li>
+                        <li><a href="/cart">Səbət</a></li>
                     </ul>
                 </div>
             </div>

@@ -6,14 +6,17 @@
         <form action="{{ route('manage.shipping_return.save') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div>
-                <div class="pull-left"><h3>Göndərmə və Qaytarma</h3></div>
+                <div class="pull-left">
+                    <h3>Göndərmə və Qaytarma</h3>
+                </div>
                 <div class="pull-right">
                     <button type="submit" class="btn btn-info"><i class="fa fa-refresh"></i> Yenilə</button>
                 </div>
                 <div class="clearfix"></div>
             </div>
-            <div class="panel panel-default" >
-                <textarea id="shipping_return" name="shipping_return" placeholder="Your text . . .">{{ old('shippingreturn', $shippingreturn->shipping_return) }}</textarea>
+            <div class="panel panel-default">
+                <textarea id="shipping_return" name="shipping_return"
+                    placeholder="Your text . . .">{{ old('shippingreturn', $shippingreturn ? $shippingreturn->shipping_return : null) }}</textarea>
             </div>
             <div>
                 <div class="pull-right">
@@ -25,14 +28,7 @@
     </section>
 @endsection
 
+
 @section('footer')
-  <script>
-    CKEDITOR.replace('shipping_return', {
-        fullPage: true,
-        allowedContent: true,
-        autoGrow_onStartup: true,
-        enterMode: CKEDITOR.ENTER_BR
-    });
-  </script>
-    
+    @include('manage.layouts.partials.ckeditorService',['uploadUrl'=>route('ckeditorProductUpload'),'editor'=>"shipping_return"])
 @endsection
