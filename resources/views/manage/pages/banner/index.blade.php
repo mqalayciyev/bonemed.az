@@ -2,7 +2,7 @@
 @section('title', __('admin.Banner Manager'))
 @section('head')
     <!-- DataTables -->
-    <link rel="stylesheet" href="{{ asset('manage/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('manager/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
 @endsection
 @section('content')
     @if (@$manage == 2)
@@ -58,8 +58,8 @@
     </section>
 @endsection
 @section('footer')
-    <script src="{{ asset('manage/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('manage/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('manager/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('manager/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
     <script>
         $(function () {
             $.fn.dataTable.ext.errMode = 'throw';

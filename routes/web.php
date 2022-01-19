@@ -86,6 +86,9 @@ Route::namespace('Manage')->prefix('manage')->group(function () {
 
     Route::match(['get', 'post'], '/login', 'AdminController@login')->name('manage.login');
     Route::get('/logout', 'AdminController@logout')->name('manage.logout');
+    Route::match(['get', 'post'], '/forgot-password', 'AdminController@forgot')->name('manage.forgot.password');
+    Route::get('/recovery-password/{token}/{email}', 'AdminController@recovery')->name('manage.recovery.password');
+    Route::post('/change-password', 'AdminController@change')->name('manage.change.password');
     Route::group(['middleware' => 'manage'], function () {
 		
         Route::get('/homepage', 'HomepageController@index')->name('manage.homepage');
@@ -138,6 +141,22 @@ Route::namespace('Manage')->prefix('manage')->group(function () {
             Route::post('/remove_image', 'ProductController@remove_image')->name('manage.product.remove_image');
             Route::post('/load_images', 'ProductController@load_images')->name('manage.product.load_images');
             Route::get('/categories', 'ProductController@categories')->name('manage.product.categories');
+        });
+        Route::group(['prefix' => 'color'], function () {
+            Route::get('/', 'ColorController@index')->name('manage.color');
+            Route::get('/index_data', 'ColorController@index_data')->name('manage.color.index_data');
+            Route::post('/post_data', 'ColorController@post_data')->name('manage.color.post_data');
+            Route::get('/fetch_data', 'ColorController@fetch_data')->name('manage.color.fetch_data');
+            Route::get('/delete_data', 'ColorController@delete_data')->name('manage.color.delete_data');
+            Route::get('/mass_remove', 'ColorController@mass_remove')->name('manage.color.mass_remove');
+        });
+        Route::group(['prefix' => 'size'], function () {
+            Route::get('/', 'SizeController@index')->name('manage.size');
+            Route::get('/index_data', 'SizeController@index_data')->name('manage.size.index_data');
+            Route::post('/post_data', 'SizeController@post_data')->name('manage.size.post_data');
+            Route::get('/fetch_data', 'SizeController@fetch_data')->name('manage.size.fetch_data');
+            Route::get('/delete_data', 'SizeController@delete_data')->name('manage.size.delete_data');
+            Route::get('/mass_remove', 'SizeController@mass_remove')->name('manage.size.mass_remove');
         });
         Route::group(['prefix' => 'slider'], function () {
             Route::get('/', 'SlideshowController@index')->name('manage.slider');

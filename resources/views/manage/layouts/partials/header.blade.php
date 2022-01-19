@@ -18,13 +18,13 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="{{ asset('manage/dist/img/default-50x50.gif') }}" class="user-image" alt="User Image">
+                        <img src="{{ asset('manager/dist/img/default-50x50.gif') }}" class="user-image" alt="User Image">
                         <span class="hidden-xs">{{ auth('manage')->user()->first_name.' '. auth('manage')->user()->last_name }}</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="{{ asset('manage/dist/img/default-50x50.gif') }}" class="img-circle" alt="User Image">
+                            <img src="{{ asset('manager/dist/img/default-50x50.gif') }}" class="img-circle" alt="User Image">
 
                             <p>
                                 {{ auth('manage')->user()->first_name.' '. auth('manage')->user()->last_name }}

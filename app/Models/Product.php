@@ -16,11 +16,6 @@ class Product extends Model
         return $this->belongsToMany('App\Models\Category', 'category_product');
     }
 
-    public function suppliers()
-    {
-        return $this->belongsToMany('App\Models\Supplier', 'supplier_product');
-    }
-
     public function tags()
     {
         return $this->belongsToMany('App\Models\Tag', 'tag_product');
@@ -44,5 +39,17 @@ class Product extends Model
     public function image()
     {
         return $this->hasOne('App\Models\ProductImage')->withDefault();
+    }
+    public function images()
+    {
+        return $this->hasMany('App\Models\ProductImage');
+    }
+    public function colors()
+    {
+        return $this->belongsToMany('App\Models\Color', 'color_product');
+    }
+    public function sizes()
+    {
+        return $this->belongsToMany('App\Models\Size', 'size_product');
     }
 }

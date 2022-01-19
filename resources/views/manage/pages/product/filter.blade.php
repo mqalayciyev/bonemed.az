@@ -3,7 +3,7 @@
 @section('head')
     <!-- DataTables -->
     <link rel="stylesheet"
-          href="{{ asset('manage/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
+          href="{{ asset('manager/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
 @endsection
 @section('content')
 @if (@$manage == 2)
@@ -40,7 +40,6 @@
                                 <th>@lang('admin.Image')</th>
                                 <th>@lang('admin.Product Name')</th>
                                 <th>@lang('admin.Brand')</th>
-                                <th>@lang('admin.Supplier')</th>
                                 <th>@lang('admin.Sale Price')</th>
                                 <th>@lang('admin.Stok')</th>
                                 <th>@lang('admin.Updated at')</th>
@@ -63,8 +62,8 @@
 @endsection
 @section('footer')
     <!-- DataTables -->
-    <script src="{{ asset('manage/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('manage/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('manager/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('manager/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
     <script>
         $(function () {
 
@@ -78,8 +77,7 @@
                 columns: [
                     {data: 'image_name', name: 'product_image.image_name', orderable: false, searchable: false},
                     {data: 'product_name', name: 'product.product_name'},
-                    {data: 'brand_name', name: 'brand_name', searchable: false},
-                    {data: 'supplier_name', name: 'supplier_name', searchable: false},
+                    {data: 'name', name: 'brand.name'},
                     {data: 'sale_price', name: 'product.sale_price'},
                     {data: 'stok_piece', name: 'product.stok_piece'},
                     {data: 'updated_at', name: 'product.updated_at'},

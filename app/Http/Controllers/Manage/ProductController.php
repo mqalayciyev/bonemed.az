@@ -8,6 +8,10 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\Size;
+use App\Models\SizeProduct;
+use App\Models\Color;
+use App\Models\ColorProduct;
 use App\Models\Supplier;
 use App\Models\Tag;
 use Illuminate\Http\Request;
@@ -27,12 +31,9 @@ class ProductController extends Controller
         //leftJoin('product_image', 'product_image.product_id', '=', 'product.id')-> SILINDI.
         $rows = Product::leftJoin('brand_product', 'product.id', '=', 'brand_product.product_id')
             ->leftJoin('brand', 'brand.id', '=', 'brand_product.brand_id')
-            ->leftJoin('supplier_product', 'supplier_product.product_id', '=', 'product.id')
-            ->leftJoin('supplier', 'supplier.id', '=', 'supplier_product.supplier_id')
             ->select([
                 'product.*',
-                'brand.name as brand_name',
-                'supplier.name as supplier_name'
+                'brand.name',
             ]);
         return DataTables::eloquent($rows)
             ->editColumn('image_name', function ($row) {
@@ -41,29 +42,15 @@ class ProductController extends Controller
                 $image .= '" class="img-responsive" style="width: 50px; height:50px;">';
                 return $image;
             })
-            // ->addColumn('manage', function ($row) {
-            //     $id = $row->manage;
-            //     $manage = Admin::find($id);
-            //     $output = '<span>';
-            //     $output .= $manage->first_name . ' ' . $manage->last_name;
-            //     $output .= '</span>';
-            //     return $output;
-            // })
             ->addColumn('action', function ($row) {
-                if(auth('manage')->user()->is_manage == 2){
-                    $disabled = 'none';
-                }
-                else{
-                    $disabled = '';
-                }
 
                 return '<div>
                 <a href="' . route('manage.product.edit', $row->id) . '" class="btn btn-sm btn-primary edit"> <i class="fa fa-edit"></i> ' . __('admin.Edit') . '</a>
-                <a href="javascript:void(0);" class="btn btn-sm btn-danger delete" style="display: ' . $disabled .'" style="display: ' . $disabled .'" id="' . $row->id . '"> <i class="fa fa-remove"></i> ' . __('admin.Delete') . '</a>
+                <a href="javascript:void(0);" class="btn btn-sm btn-danger delete" id="' . $row->id . '"> <i class="fa fa-remove"></i> ' . __('admin.Delete') . '</a>
                 </div>';
             })
             ->addColumn('checkbox', '<input type="checkbox" name="checkbox[]" id="checkbox" class="checkbox" value="{{$id}}" />')
-            ->rawColumns(['checkbox', 'image_name', 'manage', 'action'])
+            ->rawColumns(['checkbox', 'image_name', 'action'])
             ->toJson();
     }
 
@@ -77,12 +64,9 @@ class ProductController extends Controller
         $rows = Product::leftJoin('product_image', 'product_image.product_id', '=', 'product.id')
             ->leftJoin('brand_product', 'product.id', '=', 'brand_product.product_id')
             ->leftJoin('brand', 'brand.id', '=', 'brand_product.brand_id')
-            ->leftJoin('supplier_product', 'supplier_product.product_id', '=', 'product.id')
-            ->leftJoin('supplier', 'supplier.id', '=', 'supplier_product.supplier_id')
             ->select([
                 'product.*',
-                'brand.name as brand_name',
-                'supplier.name as supplier_name'
+                'brand.name',
             ]);
         $rows->where('brand_product.brand_id', $id);
 
@@ -108,23 +92,27 @@ class ProductController extends Controller
     {
         $entry = new Product;
         $product_categories = [];
-        $product_suppliers = [];
         $product_brands = [];
+        $product_colors = [];
+        $product_sizes = [];
         if ($id > 0) {
             $entry = Product::find($id);
             $product_categories = $entry->categories()->pluck('category_id')->all();
-            $product_suppliers = $entry->suppliers()->pluck('supplier_id')->all();
             $product_brands = $entry->brands()->pluck('brand_id')->all();
+            $product_colors = $entry->colors()->pluck('color_id')->all();
+            $product_sizes = $entry->sizes()->pluck('size_id')->all();
         }
 
         $entry_category = new Category();
 
         $categories = Category::all();
         $brands = Brand::orderBy('name', 'asc')->get();
-        $tags = Tag::orderBy('name', 'asc')->get();
-        $suppliers = Supplier::orderBy('name', 'asc')->get();
+        // $tags = Tag::orderBy('name', 'asc')->get();
+        $sizes = Size::all();
+        $colors = Color::all();
         $images = ProductImage::all();
-        return view('manage.pages.product.form', compact('entry', 'categories', 'product_categories', 'product_suppliers', 'images', 'brands', 'tags', 'suppliers', 'entry_category', 'product_brands'));
+
+        return view('manage.pages.product.form', compact('entry', 'product_colors', 'product_sizes', 'categories', 'product_categories', 'images', 'brands', 'colors', 'sizes', 'entry_category', 'product_brands'));
     }
     public function categories(){
         $categories = Category::all();
@@ -158,13 +146,15 @@ class ProductController extends Controller
         $this->validate(request(), [
             'product_name' => 'required',
             'supply_price' => 'required',
+            'categories' => 'required',
+            'brand' => 'required',
             'stok_piece' => 'required',
             'retail_price' => 'required',
             'sale_price' => 'required',
             'slug' => (request('original_slug') != request('slug') ? 'unique:product,slug' : '')
         ]);
 
-        $data_detail = request()->only('show_slider', 'show_new_collection', 'show_hot_deal', 'show_best_seller', 'show_latest_products', 'show_deals_of_the_day', 'show_picked_for_you', 'size_s', 'size_xs', 'size_m', 'size_l', 'size_xl', 'size_sl', 'color_red', 'color_black', 'color_white', 'color_green', 'color_orange', 'color_blue', 'color_pink', 'color_yellow', 'color_cyan', 'color_grey');
+        $data_detail = request()->only('show_new_collection', 'show_hot_deal', 'show_best_seller', 'show_latest_products', 'show_deals_of_the_day', 'show_picked_for_you', 'color_red', 'color_black', 'color_white', 'color_green', 'color_orange', 'color_blue', 'color_pink', 'color_yellow', 'color_cyan', 'color_grey');
 
         $categories = request('categories');
         $exits_category = Category::where('category_name', $categories)->first();
@@ -180,27 +170,43 @@ class ProductController extends Controller
                 $exits_brand->id
             );
         }
-        $suppliers = request('supplier');
-        $exits_supplier = Supplier::where('name', $suppliers)->first();
-        if ($exits_supplier) {
-            $suppliers = array(
-                $exits_supplier->id
-            );
+        // $tags_old = request('tag');
+        // if ($tags_old) {
+        //     $tags = array();
+        //     foreach ($tags_old as $tag) {
+        //         $exists_tag = Tag::where('name', $tag)->first();
+        //         if ($exists_tag) {
+        //             array_push($tags, $exists_tag->id);
+        //         } else {
+        //             $form = Tag::create([
+        //                 'name' => $tag
+        //             ]);
+        //             $form->save();
+        //             $exists_tag = Tag::where('name', $tag)->first();
+        //             array_push($tags, $exists_tag->id);
+        //         }
+        //     }
+        // }
+
+
+        $colors_old = request('color');
+        
+        if ($colors_old) {
+            $colors = array();
+            foreach ($colors_old as $color) {
+                $exists_color = Color::where('name', $color)->first();
+                if ($exists_color) {
+                    array_push($colors, $exists_color->id);
+                }
+            }
         }
-        $tags_old = request('tag');
-        if ($tags_old) {
-            $tags = array();
-            foreach ($tags_old as $tag) {
-                $exists_tag = Tag::where('name', $tag)->first();
-                if ($exists_tag) {
-                    array_push($tags, $exists_tag->id);
-                } else {
-                    $form = Tag::create([
-                        'name' => $tag
-                    ]);
-                    $form->save();
-                    $exists_tag = Tag::where('name', $tag)->first();
-                    array_push($tags, $exists_tag->id);
+        $sizes_old = request('size');
+        if ($sizes_old) {
+            $sizes = array();
+            foreach ($sizes_old as $size) {
+                $exists_size = Size::where('name', $size)->first();
+                if ($exists_size) {
+                    array_push($sizes, $exists_size->id);
                 }
             }
         }
@@ -210,23 +216,60 @@ class ProductController extends Controller
             $entry->update($data);
             $entry->detail()->update($data_detail);
             $entry->categories()->sync($categories);
-            $entry->suppliers()->sync($suppliers);
             $entry->brands()->sync($brands);
-            if ($tags_old) {
-                $entry->tags()->sync($tags);
+            if ($sizes_old) {
+                $entry->sizes()->sync($sizes);
             }
+            else{
+                SizeProduct::where('product_id', $entry->id)->delete();
+            }
+            if ($colors_old) {
+                $entry->colors()->sync($colors);
+            }
+            else{
+                ColorProduct::where('product_id', $entry->id)->delete();
+            }
+            // if ($tags_old) {
+            //     $entry->tags()->sync($tags);
+            // }
         } else {
             $entry = Product::create($data);
             $entry->detail()->create($data_detail);
             $entry->categories()->attach($categories);
-            $entry->suppliers()->attach($suppliers);
-            $entry->brands()->attach($brands);
-            if ($tags_old) {
-                $entry->tags()->attach($tags);
+            $entry->brands()->attach($brands);$entry->brands()->attach($brands);
+            if ($sizes_old) {
+                $entry->sizes()->attach($sizes);
             }
+            if ($colors_old) {
+                $entry->colors()->attach($colors);
+            }
+            // if ($tags_old) {
+            //     $entry->tags()->attach($tags);
+            // }
         }
 
         if (request()->hasFile('product_images')) {
+            $images = ProductImage::where('product_id', $id)->first();
+            if($images){
+                
+                $image_path = app_path("img/products/{$images->image_name}");
+                $image_path2 = app_path("img/products/{$images->thumb_name}");
+                $image_path3 = app_path("img/products/{$images->main_name}");
+                if(file_exists($image_path))
+                {
+                    unlink($image_path);
+                }
+                if(file_exists($image_path2))
+                {
+                    unlink($image_path2);
+                }
+                if(file_exists($image_path3))
+                {
+                    unlink($image_path3);
+                }
+            }
+            
+
             $product_images = request()->file('product_images');
             $product_images = request()->product_images;
             // $cover = request()->cover;
@@ -265,15 +308,11 @@ class ProductController extends Controller
                     $product_image_model->product_id = $entry->id;
                     $product_image_model->image_name = $filename;
                     
-                    // if($count === $cover){
-                    //     $product_image_model->cover = $cover;
-                    // }
                     
                     $product_image_model->main_name = $filename_main;
                     $product_image_model->thumb_name = $filename_thumb;
                     $product_image_model->save();
                     
-                    // $count++;
                 }
 
             }
@@ -288,6 +327,22 @@ class ProductController extends Controller
     public function delete_data(Request $request)
     {
         $rows = Product::find($request->input('id'));
+        $images = ProductImage::where('product_id', $rows->id);
+        $image_path = app_path("img/products/{$images->image_name}");
+        $image_path2 = app_path("img/products/{$images->thumb_name}");
+        $image_path3 = app_path("img/products/{$images->main_name}");
+        if(file_exists($image_path))
+        {
+            unlink($image_path);
+        }
+        if(file_exists($image_path2))
+        {
+            unlink($image_path2);
+        }
+        if(file_exists($image_path3))
+        {
+            unlink($image_path3);
+        }
         if ($rows->delete()) {
             echo __('admin.Data Deleted');
         }
@@ -297,6 +352,24 @@ class ProductController extends Controller
     {
         $id_array = $request->input('id');
         $rows = Product::whereIn('id', $id_array);
+        foreach ($rows as $row) {
+            $images = ProductImage::where('product_id', $row->id);
+            $image_path = app_path("img/products/{$images->image_name}");
+            $image_path2 = app_path("img/products/{$images->thumb_name}");
+            $image_path3 = app_path("img/products/{$images->main_name}");
+            if(file_exists($image_path))
+            {
+                unlink($image_path);
+            }
+            if(file_exists($image_path2))
+            {
+                unlink($image_path2);
+            }
+            if(file_exists($image_path3))
+            {
+                unlink($image_path3);
+            }
+        }
         if ($rows->delete()) {
             echo __('admin.Data Deleted');
         }
@@ -332,6 +405,21 @@ class ProductController extends Controller
     {
         $image_id = $request->get('id');
         $image_rows = ProductImage::find($image_id);
+        $image_path = app_path("img/products/{$image_rows->image_name}");
+        $image_path2 = app_path("img/products/{$image_rows->thumb_name}");
+        $image_path3 = app_path("img/products/{$image_rows->main_name}");
+        if(file_exists($image_path))
+        {
+            unlink($image_path);
+        }
+        if(file_exists($image_path2))
+        {
+            unlink($image_path2);
+        }
+        if(file_exists($image_path3))
+        {
+            unlink($image_path3);
+        }
         $image_rows->delete();
     }
 

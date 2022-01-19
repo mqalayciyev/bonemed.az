@@ -1,27 +1,17 @@
 @extends('manage.layouts.master')
-@section('title', __('admin.Brand Manager'))
+@section('title', "Ölçülər")
 @section('head')
     <!-- DataTables -->
     <link rel="stylesheet"
           href="{{ asset('manager/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
 @endsection
 @section('content')
-    @if (@$manage == 2)
-    <!-- Demo Admin -->
-        @php
-            $disabled = "disabled"
-        @endphp
-    @else
-        @php
-            $disabled = ""
-        @endphp
-    @endif
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1 class="pull-left">@lang('admin.Brands')</h1>
+        <h1 class="pull-left">Ölçülər</h1>
         <div class="pull-right">
             <button class="btn btn-success" id="add_data">
-                <i class="fa fa-plus"></i> @lang('admin.Add New Brand')
+                <i class="fa fa-plus"></i> Yeni ölçü
             </button>
         </div>
         <div class="clearfix"></div>
@@ -42,23 +32,16 @@
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span></button>
-                                            <h4 class="modal-title">@lang('admin.Add New Brand')</h4>
+                                            <h4 class="modal-title">Yeni ölçü</h4>
                                         </div>
                                         <div class="modal-body">
                                             <span id="form_output"></span>
                                             <div class="form-group">
-                                                <label for="name">@lang('admin.Brand Name')</label> <br>
+                                                <label for="name">Ölçü</label> <br>
                                                 <input type="text" name="name" class="form-control"
-                                                       id="name" placeholder="@lang('admin.Brand Name')"
+                                                       id="name" placeholder="Ölçü"
                                                        value="{{ old('name') }}">
-                                                <input type="hidden" name="slug" value="">
                                                 <input type="hidden" name="id" value="" id="id">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="description">@lang('admin.Description')</label> <br>
-                                                <textarea class="form-control" name="description" rows="5"
-                                                          id="description"
-                                                          placeholder="@lang('admin.Description')">{{ old('description') }}</textarea>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -66,8 +49,8 @@
                                                    value="insert"/>
                                             <button type="button" class="btn btn-default"
                                                     data-dismiss="modal">@lang('admin.Close')</button>
-                                            <input type="submit" {{ $disabled }} name="submit" id="action"
-                                                   class="btn btn-success" value="@lang('admin.Save Brand')"/>
+                                            <input type="submit"  name="submit" id="action"
+                                                   class="btn btn-success" value="@lang('admin.Save Tag')"/>
                                         </div>
                                     </form>
                                 </div>
@@ -82,14 +65,13 @@
                                style="width:100%">
                             <thead>
                             <tr>
-                                <th>@lang('admin.Name')</th>
-                                <th>@lang('admin.Description')</th>
+                                <th>Ölçü</th>
                                 <th>@lang('admin.Number of Products')</th>
                                 <th>@lang('admin.Updated at')</th>
                                 <th>@lang('admin.Created at')</th>
                                 <th>@lang('admin.Action')</th>
                                 <th>
-                                    <button type="button" {{ $disabled }} title="@lang('admin.Select and Delete')" name="bulk_delete"
+                                    <button type="button"  title="@lang('admin.Select and Delete')" name="bulk_delete"
                                             id="bulk_delete"
                                             class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
                                 </th>
@@ -112,16 +94,17 @@
         $(function () {
 
             $('#index_table').DataTable({
-                order: [[3, "desc"]],
+                aLengthMenu: [[25, 50, 75, 100, 150, 200], [25, 50, 75, 100, 150, 200]],
+                iDisplayLength: 25,
+                order: [[2, "desc"]],
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route('manage.brand.index_data') }}',
+                ajax: '{{ route('manage.size.index_data') }}',
                 columns: [
-                    {data: 'name', name: 'brand.name'},
-                    {data: 'description', name: 'brand.description'},
-                    {data: 'brand_products', name: 'brand_products', searchable: false},
-                    {data: 'updated_at', name: 'brand.updated_at'},
-                    {data: 'created_at', name: 'brand.created_at'},
+                    {data: 'name', name: 'size.name'},
+                    {data: 'size_products', name: 'size_products', searchable: false},
+                    {data: 'updated_at', name: 'size.updated_at'},
+                    {data: 'created_at', name: 'size.created_at'},
                     {data: 'action', orderable: false, searchable: false},
                     {data: 'checkbox', orderable: false, searchable: false},
                 ],
@@ -155,7 +138,7 @@
                 $('#form')[0].reset();
                 $('#form_output').html('');
                 $('#button_action').val('insert');
-                $('#action').val('{{ __('admin.Save Brand') }}');
+                $('#action').val('Saxla');
             });
 
             $('#form').on('submit', function (event) {
@@ -163,7 +146,7 @@
                 var form_data = $(this).serialize();
                 $.ajax({
                     method: 'POST',
-                    url: '{{ route('manage.brand.post_data') }}',
+                    url: '{{ route('manage.size.post_data') }}',
                     data: form_data,
                     dataType: 'json',
                     success: function (data) {
@@ -176,10 +159,13 @@
                         } else {
                             $('#form_output').html(data.success).hide().fadeIn('slow').fadeTo(5000, 0.50);
                             $('#form')[0].reset();
-                            $('#action').val('{{ __('admin.Save Brand') }}');
-                            $('.modal-title').text('{{ __('admin.Add New Brand') }}');
+                            $('#action').val('Saxla');
+                            $('.modal-title').text('Yeni ölçü');
                             $('#button_action').val('insert');
                             $('#index_table').DataTable().ajax.reload();
+                            setTimeout(() => {
+                                $('#form_modal').modal('hide');
+                            }, 1000)
                         }
                     }
                 });
@@ -188,7 +174,7 @@
             $(document).on('click', '.edit', function () {
                 var id = $(this).attr('id');
                 $.ajax({
-                    url: '{{ route('manage.brand.fetch_data') }}',
+                    url: '{{ route('manage.size.fetch_data') }}',
                     method: 'GET',
                     data: {id: id},
                     dataType: 'json',
@@ -197,8 +183,8 @@
                         $('#description').val(data.description);
                         $('#id').val(id);
                         $('#form_modal').modal('show');
-                        $('#action').val('{{ __('admin.Edit') }}');
-                        $('.modal-title').text('{{ __('admin.Edit Data') }}');
+                        $('#action').val('Yenilə');
+                        $('.modal-title').text('Ölçü');
                         $('#button_action').val('update');
                     }
                 });
@@ -208,7 +194,7 @@
                 var id = $(this).attr('id');
                 if (confirm('{{ __('admin.Are you sure you want to delete this data?') }}')) {
                     $.ajax({
-                        url: '{{ route('manage.brand.delete_data') }}',
+                        url: '{{ route('manage.size.delete_data') }}',
                         method: 'GET',
                         data: {id: id},
                         success: function (data) {
@@ -229,7 +215,7 @@
                     });
                     if (id.length > 0) {
                         $.ajax({
-                            url: '{{ route('manage.brand.mass_remove') }}',
+                            url: '{{ route('manage.size.mass_remove') }}',
                             method: 'GET',
                             data: {id: id},
                             success: function (data) {

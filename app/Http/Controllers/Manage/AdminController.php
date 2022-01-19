@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\PasswordReset;
+use App\Mail\ResetPasswordAdmin;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
@@ -209,6 +215,71 @@ class AdminController extends Controller
         if ($rows->delete()) {
             echo __('admin.Data Deleted');
         }
+    }
+    public function forgot(){
+        if (request()->isMethod('POST')) {
+            // $admin = Admin::where('email', '=', request('email'))->first();
+            $count =Admin::where('email', '=', request('email'))->count();
+
+            if ($count == 0) {
+                return redirect()->back()->withErrors(['email' => trans('İstifadəçi mövcud deyil')]);
+            }
+
+            $token = Str::random(60);
+            PasswordReset::insert([
+                'email' =>request('email'),
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]);
+            $reset = ['link' => route('manage.recovery.password', [$token, request('email')])];
+            Mail::to(request('email'))->send(new ResetPasswordAdmin($reset));
+            return redirect()
+                ->route('manage.login')
+                ->with('message_type', 'success')
+                ->with('message', 'Məlumat emailinizə göndərildi.');
+        }
+        else{
+            return view('manage.pages.forgot_password');
+        }
+
+    }
+    public function recovery($token, $email){
+        $count = PasswordReset::where('email', $email)
+            ->where('token', $token)
+            ->where('deleted_at', NULL)
+            ->count();
+        if($count > 0){
+            return view('manage.pages.recovery_password', [
+                'email' => $email,
+                'token' => $token
+            ]);
+        }
+        else{
+            return redirect()
+                ->route('manage.login')
+                ->withErrors(['Bu link artıq mövcud deyil.']);
+        }
+
+    }
+    public function change(){
+
+        $this->validate(request(), [
+            'password'              => 'required|min:6',
+            'password_confirmation' => 'required|same:password'
+        ]);
+
+        Admin::where('email', request('email'))->update([
+            'password' => Hash::make(request('password')),
+        ]);
+
+        PasswordReset::where('email', request('email'))
+            ->where('token', request('token'))
+            ->delete();
+
+        return redirect()
+                ->route('manage.login')
+                ->with('message_type', 'success')
+                ->with('message', 'Şifrəniz uğurla dəyişdirildi.');
     }
 
 }

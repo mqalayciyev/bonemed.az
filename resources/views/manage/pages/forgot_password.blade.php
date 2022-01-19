@@ -23,53 +23,38 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        {{-- <b>@lang('admin.Control Panel')</b> --}}
-        <b>Admin Girişi</b>
+        <b>Şifrəmi unutdum</b>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
-        <p class="login-box-msg">@lang('admin.Sign in to start your session')</p>
+        <p class="login-box-msg">Emailinizə göndəriləcək linkdən şifrənizi dəyişdirə bilərsiniz</p>
         @include('common.errors.validate')
-        <form action="{{ route('manage.login') }}" method="post" autocomplete="off">
+        @include('common.alert')
+        <form action={{route('manage.forgot.password' )}} method="POST">
             {{ csrf_field() }}
             <div class="form-group has-feedback">
                 <input type="email" name="email" id="email" class="form-control" placeholder="Email" required autofocus>
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
             </div>
-            <div class="form-group has-feedback">
-                <input type="password" name="password" id="password" class="form-control" placeholder="@lang('admin.Password')" required>
-                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-            </div>
-            {{-- <div class="form-group has-feedback">
-                <select name="type" class="form-control">
-                    <option value="1">Admin</option>
-                    <option value="2">İstifadəçi</option>
-                </select>
-            </div> --}}
             <div class="row">
                 <div class="col-xs-8">
-                    <div class="checkbox">
-                        <label><input type="checkbox" name="rememberme" value="1"> @lang('admin.Remember Me')</label>
-                    </div>
+                    <a href="{{route('manage.login')}}">Giriş</a>
                 </div>
                 <!-- /.col -->
-                <div class="col-xs-4">
-                    <button type="submit" class="btn btn-primary btn-block btn-flat">@lang('admin.Sign In')</button>
+                <div class="col-xs-4 ">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Göndər</button>
                 </div>
                 <!-- /.col -->
             </div>
         </form>
-        <p class="mb-1">
-            <a href="{{route('manage.forgot.password')}}">Parolumu unutmuşam</a>
-        </p>
     </div>
     <!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
 
 <!-- jQuery 3 -->
-<script src="{{ asset('manager/bower_components/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="{{ asset('manager/bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 </body>
 </html>

@@ -143,16 +143,7 @@
     </style>
 @endsection
 @section('content')
-@if (@$manage == 2)
-    <!-- Demo Admin -->
-        @php
-            $disabled = "disabled"
-        @endphp
-    @else
-        @php
-            $disabled = ""
-        @endphp
-    @endif
+
     <div class="modal" id="category_modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -196,41 +187,9 @@
                                value="insert"/>
                         <button type="button" class="btn btn-default"
                                 data-dismiss="modal">@lang('admin.Close')</button>
-                        <input type="submit" name="submit" {{ $disabled }} id="action"
+                        <input type="submit" name="submit"  id="action"
                                class="btn btn-success add_category"
                                value="@lang('admin.Save Category')"/>
-                    </div>
-                </form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <div class="modal fade" id="supplier_modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form method="post" id="supplier_form" autocomplete="off">
-                    {{ csrf_field() }}
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"
-                                aria-label="Close">
-                            <span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">@lang('admin.Add New Supplier')</h4>
-                    </div>
-                    <div class="modal-body">
-                        <span id="form_output"></span>
-                        <div class="form-group">
-                            <label for="name">@lang('admin.Supplier Name')</label> <br>
-                            <input type="text" name="name" class="form-control name"
-                                   id="name" placeholder="@lang('admin.Supplier Name')">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default"
-                                data-dismiss="modal">@lang('admin.Close')</button>
-                        <input type="submit" name="submit" {{ $disabled }} id="action"
-                               class="btn btn-success add_supplier"
-                               value="@lang('admin.Save Supplier')"/>
                     </div>
                 </form>
             </div>
@@ -272,7 +231,7 @@
                                value="insert"/>
                         <button type="button" class="btn btn-default"
                                 data-dismiss="modal">@lang('admin.Close')</button>
-                        <input type="submit" name="submit" {{ $disabled }} id="action"
+                        <input type="submit" name="submit"  id="action"
                                class="btn btn-success add_brand"
                                value="@lang('admin.Save Brand')"/>
                     </div>
@@ -290,12 +249,12 @@
                 @if($entry->id>0)
                     <a href="{{ route('manage.product.new') }}"
                        class="btn btn-success"> @lang('admin.Add New Product')</a>
-                    <button type="submit" {{ $disabled }} class="btn btn-info"><i
+                    <button type="submit"  class="btn btn-info"><i
                                 class="fa fa-refresh"></i> @lang('admin.Update')</button>
                 @else
                     <a href="{{ route('manage.product') }}"
                        class="btn btn-default"> @lang('admin.Cancel')</a>
-                    <button type="submit" {{ $disabled }} class="btn btn-success"><i
+                    <button type="submit"  class="btn btn-success"><i
                                 class="fa fa-plus"></i> @lang('admin.Save')</button>
                 @endif
             </div>
@@ -326,7 +285,7 @@
                                                            value="{{ old('product_name', $entry->product_name) }}">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-6" style="visibility: hidden">
                                                 <div class="form-group">
                                                     <label for="slug">@lang('admin.Slug')</label>
                                                     <input type="hidden" name="original_slug"
@@ -357,43 +316,28 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="tags">@lang('admin.Tags')
-                                                        <small class="text text-muted">@lang('admin.Describe the product using relevant keywords for easy filtering.')</small>
-                                                    </label>
-                                                    <select class="form-control tag" id="tag" name="tag[]"
-                                                            data-placeholder="@lang('admin.Enter a tag name')"
-                                                            multiple="multiple">
-                                                        @foreach($tags as $tag)
-                                                            <option value="{{ old('tag',$tag->name) }}">{{ old('tag',$tag->name) }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div id="meta-view" class="panel panel-default" style="border-radius: 0px;">
                                             <div class="panel-body">
                                                 <p class="title" style="margin: 0; color: blue;"></p>
                                                 <p class="url" style="word-wrap: break-word; color: green; font-size: 15px; font-weight: 200; margin: 0;">
-                                                    https://inova.az/az/home/27-.html?adtoken=1cd9fc99265bc7693e8c7b34e66df7c8&ad=admin123&id_employee=1&preview=1</p>
+                                                    {{ env('APP_URL') . 'product/' . $entry->slug }}
+                                                </p>
                                                 <small class="discription"></small>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="meta-title">Meta title</label>
-                                                    <input type="text" id="meta-title" name="meta_title" class="form-control" value="{{ old('meta_title', $entry->meta_title) }}">
+                                                    <label for="meta-description">Seo description</label>
+                                                    <input type="text" id="meta-discription" name="meta_discription" placeholder="Məhsulun təsviri qısa mətn." class="form-control" value="{{ old('meta_title', $entry->meta_discription) }}">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="meta-description">Meta description</label>
-                                                    <input type="text" id="meta-discription" name="meta_discription" class="form-control" value="{{ old('meta_title', $entry->meta_discription) }}">
+                                                    <label for="meta-title">Seo keywords</label>
+                                                    <input type="text" id="meta-title" name="meta_title" placeholder="məhsul, məhsul-açıqlama, keywords, product, məhsul adı," class="form-control" value="{{ old('meta_title', $entry->meta_title) }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -440,19 +384,6 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label class="switch">
-                                                        <input type="checkbox" id="pos" name="point_of_sale" class="pos"
-                                                               value="{{ old('point_of_sale',1) }}" {{ $entry->point_of_sale==1 ? 'checked' : '' }}>
-                                                        <span class="slider round"></span>
-                                                    </label> <br>
-                                                    <label for="point_of_sale">@lang('admin.Sell on Point-of-Sale')</label><br>
-                                                    <small>@lang('admin.Make this product active and available for sale in-store')</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
                                                     <label for="product_images">@lang('admin.Upload Images')</label><br>
                                                     <small>@lang('admin.Drag to rearrange. Drop an image outside of the upload area to delete.')</small>
                                                     <input type="file" id="product_images" name="product_images[]"
@@ -462,25 +393,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        {{-- <div class="row">
-                                            <div class="col-md-12 border">
-                                                <div class="form-group">
-                                                    <div class="container panel panel-default">
-                                                        <div id="upload-div" class="panel-body">
-                                                            <input type="hidden" name="cover" value="0">
-                                                            <label for="product_images" class="btn btn-primary btn-block p-5">@lang('admin.Upload Images')</label>
-                                                            <input id="product_images" class="product_images" style="visibility: hidden;" name="product_images[]" type="file" multiple="true" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="container panel panel-default">
-                                                        <div class="panel-body">
-                                                            <div id="previewImg" style="min-height: 100px;" class="row"></div>
-                                                            <div id="all_images"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> --}}
                                     </div>
                                 </div>
                                 <hr>
@@ -490,30 +402,6 @@
                                         <span>@lang('admin.The type of product we choose determines how we manage inventory and reporting.')</span>
                                     </div>
                                     <div class="col-md-8">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="supplier">@lang('admin.Supplier')</label>
-                                                    <select class="form-control select2" style="width: 100%;"
-                                                            id="supplier"
-                                                            name="supplier"
-                                                            data-placeholder="@lang('admin.Add a new supplier')">
-                                                        <option></option>
-                                                        @foreach($suppliers as $supplier)
-                                                            <option value="{{ old('supplier',$supplier->id) }}" {{ collect(old('supplier', $product_suppliers))->contains($supplier->id) ? 'selected' : '' }}>{{ old('supplier',$supplier->name) }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="supplier">@lang('admin.Supplier Code')</label>
-                                                    <input type="text" class="form-control" id="supplier_code"
-                                                           name="supplier_code"
-                                                           placeholder="@lang('admin.Enter supplier code')"/>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -637,19 +525,6 @@
                                                 <div class="form-group">
                                                     <label for="show">@lang('admin.Show')</label>
                                                     <div class="checkbox minimal" id="show">
-                                                        {{-- <label>
-                                                            <input type="hidden" name="show_slider" value="0">
-                                                            <input type="checkbox" class="minimal" name="show_slider"
-                                                                   value="1" {{ old('show_slider', @$entry->detail->show_slider) ? 'checked' : null }}>
-                                                            @lang('admin.Show Slider')
-                                                        </label> --}}
-                                                        <label>
-                                                            <input type="hidden" name="show_best_seller" value="0">
-                                                            <input type="checkbox" class="minimal"
-                                                                   name="show_best_seller"
-                                                                   value="1" {{ old('show_best_seller', @$entry->detail->show_best_seller) ? 'checked' : null }}>
-                                                            @lang('admin.Show Best Seller')
-                                                        </label>
                                                         <label>
                                                             <input type="hidden" name="show_latest_products" value="0">
                                                             <input type="checkbox" class="minimal"
@@ -658,167 +533,49 @@
                                                             @lang('admin.Show Latest Products')
                                                         </label>
                                                         <label>
-                                                            <input type="hidden" name="show_deals_of_the_day" value="0">
-                                                            <input type="checkbox" class="minimal"
-                                                                   name="show_deals_of_the_day"
-                                                                   value="1" {{ old('show_deals_of_the_day', @$entry->detail->show_deals_of_the_day) ? 'checked' : null }}>
-                                                            @lang('admin.Show Deals Of The Day')
-                                                        </label>
-                                                        <label>
                                                             <input type="hidden" name="show_picked_for_you" value="0">
                                                             <input type="checkbox" class="minimal"
                                                                    name="show_picked_for_you"
-                                                                   value="1" {{ old('show_picked_for_you', @$entry->detail->show_latest_products) ? 'checked' : null }}>
+                                                                   value="1" {{ old('show_picked_for_you', @$entry->detail->show_picked_for_you) ? 'checked' : null }}>
                                                             @lang('admin.Show Picked For You')
                                                         </label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="size">@lang('admin.Size')</label>
-                                                    <div class="checkbox minimal" id="size">
-                                                        <label>
-                                                            <input type="hidden" name="size_s" value="0">
-                                                            <input type="checkbox" class="minimal" name="size_s"
-                                                                   value="1" {{ old('size_s', @$entry->detail->size_s) ? 'checked' : null }}>
-                                                            S
-                                                        </label>
-                                                        <label>
-                                                            <input type="hidden" name="size_xs" value="0">
-                                                            <input type="checkbox" class="minimal" name="size_xs"
-                                                                   value="1" {{ old('size_xs', @$entry->detail->size_xs) ? 'checked' : null }}>
-                                                            XS
-                                                        </label>
-                                                        <label>
-                                                            <input type="hidden" name="size_m" value="0">
-                                                            <input type="checkbox" class="minimal" name="size_m"
-                                                                   value="1" {{ old('size_m', @$entry->detail->size_m) ? 'checked' : null }}>
-                                                            M
-                                                        </label>
-                                                        <label>
-                                                            <input type="hidden" name="size_l" value="0">
-                                                            <input type="checkbox" class="minimal" name="size_l"
-                                                                   value="1" {{ old('size_l', @$entry->detail->size_l) ? 'checked' : null }}>
-                                                            L
-                                                        </label>
-                                                        <label>
-                                                            <input type="hidden" name="size_xl" value="0">
-                                                            <input type="checkbox" class="minimal" name="size_xl"
-                                                                   value="1" {{ old('size_xl', @$entry->detail->size_xl) ? 'checked' : null }}>
-                                                            XL
-                                                        </label>
-                                                        <label>
-                                                            <input type="hidden" name="size_sl" value="0">
-                                                            <input type="checkbox" class="minimal" name="size_sl"
-                                                                   value="1" {{ old('size_sl', @$entry->detail->size_sl) ? 'checked' : null }}>
-                                                            SL
-                                                        </label>
+                                        {{-- <div class="row">
+                                            <div class="col-md-8">
+        
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="size">@lang('admin.Size')</label>
+                                                            <select class="form-control size" id="size" name="size[]"
+                                                                    data-placeholder="Ölçü seçin"
+                                                                    multiple="multiple">
+                                                                @foreach($sizes as $size)
+                                                                    <option value="{{ old('size',$size->name) }}" {{ collect(old('size', $product_sizes))->contains($size->id) ? 'selected' : '' }}>{{ old('size',$size->name) }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div id="change-color" class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="size">@lang('admin.Color')</label>
-                                                    <div class="row" style="display: flex; flex-wrap: wrap;">
-                                                        <div>
-                                                            <label for="color_red" class="colors filter_color">
-                                                                <span data-color="red" style="background-color: #ff0000;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_red" value="0">
-                                                            <input id="color_red" type="checkbox" name="color_red" value="1" {{ old('size_xl', @$entry->detail->color_red) ? 'checked' : null }}>
-                                                            
-                                                        </div>
-                                                        <div>
-                                                            <label for="color_black" class="colors filter_color">
-                                                                <span data-color="black" style="background-color: #000000;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_black" value="0">
-                                                            <input id="color_black" type="checkbox" name="color_black" value="1" {{ old('size_xl', @$entry->detail->color_black) ? 'checked' : null }}>
-                                                            
-                                                        </div>
-                                                        <div>
-                                                            <label for="color_white" class="colors filter_color" style="border-color: #c2c2c2;">
-                                                                <span data-color="white" style="background-color: #ffffff;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_white" value="0">
-                                                            <input id="color_white" type="checkbox" name="color_white" value="1" {{ old('size_xl', @$entry->detail->color_white) ? 'checked' : null }}>
-                                                            
-                                                        </div>
-                                                        <div>
-                                                            <label for="color_green" class="colors filter_color">
-                                                                <span data-color="green" style="background-color: #008000;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_green" value="0">
-                                                            <input id="color_green" type="checkbox" name="color_green" value="1" {{ old('size_xl', @$entry->detail->color_green) ? 'checked' : null }}>
-                                                            
-                                                        </div>
-                                                        <div>
-                                                            <label for="color_orange" class="colors filter_color">
-                                                                <span data-color="orange" style="background-color: #ffa500;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_orange" value="0">
-                                                            <input id="color_orange" type="checkbox" name="color_orange" value="1" {{ old('size_xl', @$entry->detail->color_orange) ? 'checked' : null }}>
-                                                            
-                                                        </div>
-                                                        <div>
-                                                            <label for="color_blue" class="colors filter_color">
-                                                                <span data-color="blue" style="background-color: #0000ff;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_blue" value="0">
-                                                            <input id="color_blue" type="checkbox" name="color_blue" value="1" {{ old('size_xl', @$entry->detail->color_blue) ? 'checked' : null }}>
-                                                           
-                                                        </div>
-                                                        <div>
-                                                            <label for="color_pink" class="colors filter_color">
-                                                                <span data-color="pink" style="background-color: #ff009d;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_pink" value="0">
-                                                            <input id="color_pink" type="checkbox" name="color_pink" value="1" {{ old('size_xl', @$entry->detail->color_pink) ? 'checked' : null }}>
-                                                            
-                                                        </div>
-                                                        <div>
-                                                            <label for="color_yellow" class="colors filter_color">
-                                                                <span data-color="yellow" style="background-color: #e5ff00;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_yellow" value="0">
-                                                            <input id="color_yellow" type="checkbox" name="color_yellow" value="1" {{ old('size_xl', @$entry->detail->color_yellow) ? 'checked' : null }}>
-                                                            
-                                                        </div>
-                                                        <div>
-                                                            <label for="color_cyan" class="colors filter_color">
-                                                                <span data-color="cyan" style="background-color: #00e1ff;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_cyan" value="0">
-                                                            <input id="color_cyan" type="checkbox" name="color_cyan" value="1" {{ old('size_xl', @$entry->detail->color_cyan) ? 'checked' : null }}>
-                                                            
-                                                        </div>
-                                                        <div>
-                                                            <label for="color_grey" class="colors filter_color">
-                                                                <span data-color="grey" style="background-color:  #808080;"></span>
-                                                                
-                                                            </label>
-                                                            <input type="hidden" name="color_grey" value="0">
-                                                            <input id="color_grey" type="checkbox" name="color_grey" value="1" {{ old('size_xl', @$entry->detail->color_grey) ? 'checked' : null }}>
-                                                            
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="color">Rənglər</label>
+                                                            <select class="form-control color" id="color" name="color[]"
+                                                                    data-placeholder="Rəng seçin"
+                                                                    multiple="multiple">
+                                                                @foreach($colors as $color)
+                                                                    <option  style="background-color: red" value="{{ old('color',$color->name) }}" {{ collect(old('color', $product_colors))->contains($color->id) ? 'selected' : '' }}>{{ old('color',$color->title) }}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -827,12 +584,12 @@
                             @if($entry->id>0)
                                 <a href="{{ route('manage.product.new') }}"
                                    class="btn btn-success"> @lang('admin.Add New Product')</a>
-                                <button type="submit" {{ $disabled }} class="btn btn-info"><i
+                                <button type="submit"  class="btn btn-info"><i
                                             class="fa fa-refresh"></i> @lang('admin.Update')</button>
                             @else
                                 <a href="{{ route('manage.product') }}"
                                    class="btn btn-default"> @lang('admin.Cancel')</a>
-                                <button type="submit" {{ $disabled }} class="btn btn-success"><i
+                                <button type="submit"  class="btn btn-success"><i
                                             class="fa fa-plus"></i> @lang('admin.Save')</button>
                             @endif
                         </div>
@@ -846,83 +603,6 @@
 @section('footer')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/i18n/az.js"></script>
     <script>
-        // const files = [];
-        // let id = 0;
-        // function FileListItems (files) {
-        //     var b = new ClipboardEvent("").clipboardData || new DataTransfer()
-        //     for (var i = 0, len = files.length; i<len; i++) b.items.add(files[i])
-        //     return b.files
-        // }
-        // function orderElement() {
-        //     let x = 0
-        //     $('#previewImg .images').each(function(){
-        //         $(this).attr('id', x++)
-        //     })
-        // }
-        // $("#product-form").on('change', '.product_images', function(e){
-        
-        //     let input = e.target
-            
-            
-        //     for(let i = 0; i< input.files.length; i++){
-        //         let reader = new FileReader();
-                
-        //         reader.onload = function(event){
-        //             $("#previewImg").append(`<div id="${id}" class="images"><span class="remove-image">&times</span><img  src="${event.target.result}"></div>`);
-        //             id += 1;
-        //         }
-                
-        //         reader.readAsDataURL(input.files[i]);
-        //         var parts = [
-        //             new Blob(['you construct a file...'], {type: input.files[i].type}),
-        //             ' Same way as you do with blob',
-        //             new Uint16Array([33])
-        //         ];
-        //         let file = new File(parts, input.files[i].name, {
-        //             lastModified: input.files[i].lastModified,
-        //             size: input.files[i].size,
-        //             type: input.files[i].type,
-        //         })
-        //         console.log(file);
-        //         files.push(file)
-
-        //     }
-            
-        //     input.files = new FileListItems(files)
-        // })
-        // $("#previewImg").on('click', '.remove-image', function (event) {
-        //     let input = $("#product_images")
-        //     let div = $(this).parents('div.images')
-        //     let idDiv = div.attr('id');
-        //     let parent = $("#previewImg")
-
-        //     files.splice(idDiv, 1);
-        //     id = files.length;
-        //     div.remove()
-        //     $(input).remove()
-
-        //     let img = document.createElement('input')
-        //     img.type = 'file';
-        //     img.id = 'product_images';
-        //     img.name = 'product_images[]';
-        //     img.style.visibility = 'hidden';
-        //     img.multiple = 'multiple';
-        //     img.className = 'form-control';
-        //     img.files = new FileListItems(files)
-        //     $("#form").find("#upload-div").append(img)
-            
-        //     orderElement()
-        // })
-        // $('#previewImg').on('click', '.images', function(){
-        //     $('#previewImg .images').each(function(){
-        //         $(this).find('.cover').remove();
-        //     })
-        //     let id = $(this).attr('id')
-        //     $(this).append(`
-        //         <div class="cover">Selected</div>
-        //     `);
-        //     $('#upload-div').find("input[type='hidden']").val(id);
-        // })
 
         function categories(){
             $.ajax({
@@ -938,13 +618,13 @@
         
 
         $(function () {
-            if($("#meta-title").val().trim() !== '' || $("#meta-discription").val().trim() !== ''){
+            if($("#product_name").val().trim() !== '' || $("#meta-discription").val().trim() !== ''){
                 let metaView = $("#meta-view")
-                $(metaView).find(".title").html($("#meta-title").val().trim())
+                $(metaView).find(".title").html($("#product_name").val().trim())
                 $(metaView).find(".discription").html($("#meta-discription").val().trim())
             }
 
-            $("#meta-title").on('keyup', function(event){
+            $("#product_name").on('keyup', function(event){
                 let title = $(event.target).val()
                 let metaView = $("#meta-view")
                 $(metaView).find(".title").html(title)
@@ -968,17 +648,6 @@
                     }
                 });
             }
-
-            // $(document).on('click', '.btn_remove', function (event){
-            //     function removeInput() {
-            //         $("#product_images").replaceWith($("#product_images").val('').clone(true));
-            //         $("#new_img").remove()
-            //         if($("#all_images").text() === ''){
-            //             $("#all_images").text("{{ __('admin.There is no any photos') }}")
-            //         }
-            //     };
-            //     removeInput();
-            // })
             $(document).on('click', '.btn_close', function () {
                 var id = $(this).attr('id');
                 if (confirm('{{ __('admin.Are you sure you want to delete this data?') }}')) {
@@ -997,26 +666,33 @@
                 }
             });
 
-            $("#pos").change(function () {
-                if ($(this).prop("checked") == true) {
-                    $(this).val('1');
-                } else {
-                    $(this).val(0);
-                }
-            });
 
             $('.select2').select2();
+
             $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
                 checkboxClass: 'icheckbox_minimal-blue',
                 radioClass: 'iradio_minimal-blue'
 
             });
 
-            $("#tag").select2({
+            // $("#tag").select2({
+            //     tags: true,
+            //     tokenSeparators: [',', ' '],
+            //     language: 'az'
+            // });
+
+            $("#size").select2({
                 tags: true,
                 tokenSeparators: [',', ' '],
                 language: 'az'
             });
+
+            $("#color").select2({
+                tags: true,
+                tokenSeparators: [',', ' '],
+                language: 'az'
+            });
+            
 
             $('#brand').select2({
                 tags: true,
@@ -1120,53 +796,8 @@
                 });
             });
 
-            $('#supplier').select2({
-                tags: true,
-                escapeMarkup: function (markup) {
-                    return markup;
-                },
-                insertTag: function (data, tag) {
-                    $('#supplier_modal #name').val(tag.text);
-                    tag.text = '<div><i class="fa fa-plus"></i> {{ __('admin.Add') }}: ' + tag.text + '</div>';
-                    data.push(tag);
-                },
-                language: 'az'
-            }).on('select2:select', function () {
-                if ($(this).find("option:selected").data("select2-tag") == true) {
-                    $('#supplier_modal').modal('show');
-                    $('#supplier_modal #form_output').html('');
-                    $('#supplier_modal #action').val('{{ __('admin.Save Supplier') }}');
-                }
-            });
 
-            $('form#supplier_form').submit(function (event) {
-                event.preventDefault();
-                var form_data = $(this).serialize();
-                $.ajax({
-                    method: 'POST',
-                    url: '{{ route('manage.supplier.post_data') }}',
-                    data: form_data,
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.error.length > 0) {
-                            var error_html = '';
-                            for (var count = 0; count < data.error.length; count++) {
-                                error_html += '<div class="alert alert-danger">' + data.error[count] + '</div>';
-                            }
-                            $('#supplier_modal #form_output').html(error_html).hide().fadeIn('slow');
-                        } else {
-                            $('#supplier_modal #form_output').html(data.success).hide().fadeIn('slow').fadeTo(5000, 0.50);
-                            $('#supplier_modal form#supplier_form')[0].reset();
-                            $('#supplier_modal #action').val('{{ __('admin.Save Supplier') }}');
-                            $('#supplier_modal .modal-title').text('{{ __('admin.Add New Supplier') }}');
-                            setTimeout(() => {
-                                $('#supplier_modal').modal('hide');
-                            }, 1000)
-                            
-                        }
-                    }
-                });
-            });
+
 
             $('input[name=supply_price]').keyup(function () {
                 var supply_price = parseFloat($(this).val());

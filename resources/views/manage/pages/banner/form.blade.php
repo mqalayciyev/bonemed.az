@@ -1,7 +1,6 @@
 @extends('manage.layouts.master')
 @section('title', __('admin.Banner Manager'))
 @section('head')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.css">
     <script src="https://cdn.ckeditor.com/4.9.1/basic/ckeditor.js"></script>
     <style>
         .panel{
@@ -118,17 +117,7 @@
     </style>
 @endsection
 @section('content')
-    @if (@$manage == 2)
-    <!-- Demo Admin -->
-        @php
-            $disabled = "disabled"
-        @endphp
-    @else
-        @php
-            $disabled = ""
-        @endphp
-    @endif
-    <form action="{{ route('manage.banner.save', @$flight->id) }}" method="post" enctype="multipart/form-data">
+    <form id="banner-form"  action="{{ route('manage.banner.save', @$flight->id) }}" method="post" enctype="multipart/form-data">
         @csrf
         <section class="content-header">
             <h1 class="pull-left">@lang('admin.Banner')</h1>
@@ -136,12 +125,12 @@
                 @if($flight->id>0)
                     <a href="{{ route('manage.banner.new') }}"
                        class="btn btn-success"> @lang('admin.Add New Banner')</a>
-                    <button type="submit" {{ $disabled }} class="btn btn-info"><i
+                    <button type="submit" class="btn btn-info"><i
                             class="fa fa-refresh"></i> @lang('admin.Update')</button>
                 @else
                     <a href="{{ route('manage.banner') }}"
                        class="btn btn-default"> @lang('admin.Cancel')</a>
-                    <button type="submit" {{ $disabled }} class="btn btn-success"><i
+                    <button type="submit" class="btn btn-success"><i
                             class="fa fa-plus"></i> @lang('admin.Save')</button>
                 @endif
             </div>
@@ -156,14 +145,35 @@
                     <div class="box box-body box-primary">
                         <div class="container-fluid">
                             <div class="row">
+                                <div class="col-md-12">
+                                    <div class="jumbotron text-center">
+                                        <p>
+                                            <i class="fa fa-info-circle text-info"></i>
+                                            Tövsiyyə edilən şəkil ölçüsü 704x252
+                                        </p>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div id="image_demo"></div>
+                                            </div>
+                                            <div class="input-group" style="margin-top: 15px">
+                                                <div class="custom-file">
+                                                    <input type="file" accept="image/*" id="cover_image">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="justify-content: center; display: flex">
                                 <div class="col-md-6 form-group">
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <label for="banner_name">@lang('admin.Banner Name')</label>
                                         <input type="text" class="form-control" id="banner_name"
                                                placeholder="@lang('admin.Banner Name')"
                                                name="banner_name"
                                                value="{{ old('banner_name', $flight->banner_name) }}">
-                                    </div>
+                                    </div> --}}
                                     <div class="form-group">
                                         <label for="banner_slug">@lang('admin.Banner Slug')</label>
                                         <input type="text" class="form-control" id="banner_slug"
@@ -179,42 +189,6 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="image">@lang('admin.Upload Image')</label>
-                                    <input type="file" name="image" class="btn btn-success">
-                                    {{--<button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-success">
-                                        @lang('admin.Upload New Image')
-                                    </button>
-                                    <div class="modal fade" id="modal-success">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title">@lang('admin.Upload New Image')</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div style="width: 100%">
-                                                        <div>
-                                                            <label for="product_images">@lang('admin.Upload Image')</label><br>
-                                                            <input type="file" id="image" name="has_image">
-                                                        </div>
-                                                        <div class="text-center">
-                                                            <div id="upload-demo"></div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <button class="upload-image btn btn-success" data-dismiss="modal" type="button"> Şəkili əlavə et</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>--}}
-                                    <div class="thumbnail img-rounded" id="cropped_image">
-                                        <img src="{{ $flight->banner_image != null ? asset("img/banners/" . $flight->banner_image)
-                                         : 'http://via.placeholder.com/360x260?text=BannerPhoto(360x260)' }}" class="img-rounded img-responsive">
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -224,31 +198,83 @@
     </form>
 @endsection
 @section('footer')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.js"></script>
     <script type="text/javascript">
-        var resize = $('#upload-demo').croppie({
-            enableExif: false,
-            enableOrientation: true,
-            viewport: {width: 360, height: 260},
-            boundary: {width: 568, height: 379}
+        var image_crop = $('#image_demo').croppie({
+            viewport: {
+                width: 500,
+                height: 179,
+                type: 'square'
+            },
+            boundary: {
+                width: 510,
+                height: 189,
+            }
         });
-        $('#image').on('change', function () {
+
+        image_crop.croppie('bind', {
+            url: "{{ asset('img/banners/' . $flight->banner_image) }}",
+        });
+
+        let url = false;
+
+
+        $('#cover_image').on('change', function() {
             var reader = new FileReader();
-            reader.onload = function (e) {
-                resize.croppie('bind', {
-                    url: e.target.result
+            reader.onload = function(event) {
+                image_crop.croppie('bind', {
+                    url: event.target.result,
                 });
-            };
+                url = true
+            }
             reader.readAsDataURL(this.files[0]);
         });
 
-        $('.upload-image').on('click', function (ev) {
-            const croppie = resize.croppie('result', {type: 'base64', size: [360, 260], format: 'jpeg', quality: 0.75, circle: false});
-            croppie.then(function (img) {
-                $("#cropped_image").html(`
-                                <img src="` + img + `" class="img-rounded img-responsive">
-                            <input type="hidden" name="banner_image" value="` + img + `"> `);
+        $('#banner-form').submit(function(event) {
+            event.preventDefault()
+            let id = '{{ @$flight->id ? @$flight->id : 0 }}'
+            let banner_active = $("#banner_active").val()
+            let banner_slug = $("#banner_slug").val()
+            let formData = new FormData();
+            formData.append("_token", "{{ csrf_token() }}");
+            formData.append('id', id);
+            formData.append('banner_active', banner_active);
+            formData.append('banner_slug', banner_slug);
+
+
+            image_crop.croppie('result', {
+                type: 'blob',
+                format: 'webp',
+                size: {
+                    width: 704,
+                    height: 252
+                },
+                quality: 1
+            }).then(function(blob) {
+                if (url) {
+                    formData.append('image', blob);
+                }
+                ajaxFormPost(formData, "{{ route('manage.banner.save') }}");
             });
-        });
+        })
+        /// Ajax Function
+        function ajaxFormPost(formData, actionURL) {
+            $.ajax({
+                url: actionURL,
+                type: 'POST',
+                data: formData,
+                cache: false,
+                async: true,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log(response)
+                    if (response['status'] === 'success') {
+                        window.location.reload()
+                    } else {
+                        swal("Səhv", response['message'], "error");
+                    }
+                }
+            });
+        }
     </script>
 @endsection

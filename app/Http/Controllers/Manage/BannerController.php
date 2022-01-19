@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Manage;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Image;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\File; 
 
 class BannerController extends Controller
 {
@@ -21,22 +23,27 @@ class BannerController extends Controller
 
         return DataTables::eloquent($rows)
             ->editColumn('banner_image', function ($row) {
+                $logo = '50x50';
+                if($row->type == 1){
+                    $logo = '310x188';
+                }
+                elseif($row->type == 2){
+                    $logo = '1200x350';
+                }
+                elseif($row->type == 3){
+                    $logo = '380x250';
+                }
                 $image = '<img src="';
-                $image .= $row->banner_image != null ? asset("img/banners/" . $row->banner_image) : "http://via.placeholder.com/69x50?text=BannerPhoto(360x260)";
-                $image .= '" class="img-responsive" style="width: 158px; height:50px;">';
+                $image .= $row->banner_image != null ? asset("img/banners/" . $row->banner_image) : "http://via.placeholder.com/" . $logo;
+                $image .= '" class="img-responsive" style="width: 130px; min-width: 100%; height: auto;">';
                 return $image;
             })
             ->addColumn('action', function ($row) {
-                if(auth('manage')->user()->is_manage == 2){
-                    $disabled = 'none';
-                }
-                else{
-                    $disabled = '';
-                }
+
                 return '<div>
                 <input type="hidden" name="sort_order" id="sort_order" value="' . $row->id . '"/>
-                <a href="' . route('manage.banner.edit', $row->id) . '" class="btn btn-sm btn-primary edit"> <i class="fa fa-edit"></i> ' . __('admin.Edit') . '</a>
-                <a href="javascript:void(0);" class="btn btn-sm btn-danger delete" style="display: ' . $disabled .'" id="' . $row->id . '"> <i class="fa fa-remove"></i> ' . __('admin.Delete') . '</a>
+                <a href="' . route('manage.banner.edit', [$row->id]) . '" class="btn btn-sm btn-primary edit"> <i class="fa fa-edit"></i> ' . __('admin.Edit') . '</a>
+                <a href="javascript:void(0);" class="btn btn-sm btn-danger delete"  id="' . $row->id . '"> <i class="fa fa-remove"></i> ' . __('admin.Delete') . '</a>
                 </div>';
             })
             ->addColumn('checkbox', '<input type="checkbox" name="checkbox[]" id="checkbox" class="checkbox" value="{{$id}}" />')
@@ -46,6 +53,7 @@ class BannerController extends Controller
 
     public function form($id = null)
     {
+
         $flight = new Banner;
         if ($id > 0) {
             $flight = Banner::find($id);
@@ -53,61 +61,80 @@ class BannerController extends Controller
         return view('manage.pages.banner.form', compact('flight'));
     }
 
-    public function save($id = null)
+    public function save()
     {
-        $data = request()->only('banner_name', 'banner_slug', 'banner_active');
-        $this->validate(request(), [
-            'banner_name' => 'required',
-            'banner_slug' => 'required',
-        ]);
-        if ($id > 0) {
-            $this->validate(request(), [
-                'banner_name' => 'sometimes|required|unique:banners,banner_name,' . $id
+
+        $id = request('id');
+
+        if($id == 0){
+            $validator = Validator::make(request()->all(), [
+                'image' => 'required'
             ]);
-        } else {
-            $this->validate(request(), [
-                'banner_name' => 'required|unique:banners',
-            ]);
+            if ($validator->fails()) {
+                return response()->json(['status' => 'error', 'message' => 'Şəkil boş ola bilməz']);
+            }
         }
+
+        $data = request()->only('banner_slug', 'banner_active');
+
+
+
         if (request()->hasFile('image')) {
+
+            $rows = Banner::find($id);
+            if($rows){
+                $image_path = app_path("img/banners/{$rows->banner_image}");
+            if (File::exists($image_path)) {
+                unlink($image_path);
+            }
+            }
+            
+
             $image = request()->file('image');
-            $banner_name = request()->post('banner_name');
-            /*if (substr($image, 0, 22) == 'data:image/jpeg;base64') {
-                list($type, $image) = explode(';', $image);
-                list(, $image) = explode(',', $image);
-                $image = base64_decode($image);
-            }*/
-            $filename = str_slug($banner_name) . ".jpg";
+            $image = request()->image;
+
+            $filename = 'banner_' . time().'.webp';
+
             $path = public_path('img/banners/' . $filename);
-            ini_set('memory_limit', '-1');
-            $background = Image::canvas(704, 252);
-            $background->fill('#fff');
-            $img = Image::make($image);
-            $background->insert($img, 'center');
-            $background->resize(704, null, function ($constraint) {
-                $constraint->aspectRatio();
-            })->crop(704, 252);
-            $background->save($path);
-            // $background->save($path, 75);
+            $square = Image::canvas(704, 252, array(255, 255, 255));
+
+            $img = Image::make($image->getRealPath())
+                        ->resize(704, null, function ($constraint) {
+                        $constraint->aspectRatio();
+            });
+            $square->insert($img, 'center');
+            $square->save($path);
+
             $data['banner_image'] = $filename;
         }
         if ($id > 0) {
             $flight = Banner::find($id);
             $flight->update($data);
+            $message = 'Məlumat yeniləndi';
         } else {
+            $validator = Validator::make(request()->all(), [
+                'image' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['status' => 'error', 'message' => 'Link boş ola bilməz']);
+            }
+
             $data['banner_order'] = Banner::where('deleted_at', null)->count() + 1;
             $flight = Banner::create($data);
+            $message = 'Məlumat əlavə edildi';
         }
-        return redirect()
-            ->route('manage.banner.edit', $flight->id)
-            ->with('message_icon', 'check')
-            ->with('message_type', 'success')
-            ->with('message', $id ? __('admin.Updated') : __('admin.Saved'));
+        return response()->json(['status' => 'success', 'message' => $message]);
     }
 
     public function delete_data(Request $request)
     {
         $rows = Banner::find($request->input('id'));
+
+        $image_path = app_path("img/banners/{$rows->banner_image}");
+        if (File::exists($image_path)) {
+            unlink($image_path);
+        }       
+        
         if ($rows->forceDelete()) {
             echo __('admin.Data Deleted');
         }
@@ -117,6 +144,12 @@ class BannerController extends Controller
     {
         $id_array = $request->input('id');
         $rows = Banner::whereIn('id', $id_array);
+        foreach ($rows as $row) {
+            $image_path = app_path("img/banners/{$row->banner_image}");
+            if (File::exists($image_path)) {
+                unlink($image_path);
+            }
+        }
         if ($rows->forceDelete()) {
             echo __('admin.Data Deleted');
         }
