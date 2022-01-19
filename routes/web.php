@@ -55,6 +55,7 @@ Route::namespace('Customer')->group(function () {
         Route::post('/payment', 'PaymentController@pay')->name('pay');
         Route::get('/orders', 'OrderController@index')->name('orders');
         Route::get('/orders/{id}', 'OrderController@detail')->name('order');
+        Route::get('/complete/{id}', 'PaymentController@complete')->name('complete');
         Route::post('/user/sign-out', 'UserController@sign_out')->name('user.sign_out');
         Route::get('/my_wish_list', 'WishlistController@index')->name('my_wish_list');
         Route::get('/view_my_wish_list', 'WishlistController@view_my_wish_list')->name('view_my_wish_list');

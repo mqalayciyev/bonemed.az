@@ -13,13 +13,25 @@ return [
     |
     */
 
-    'Login' => 'Login',
-    'Join' => 'Join',
-    'My Account' => 'My Account',
-    'New Products' => 'New Products',
-    'Discounted Products' => 'Discounted Products',
-    'Contact' => 'Contact',
-    'My Cart' => 'My Cart',
-    'Welcome to E-shop!' => 'Welcome to E-shop!'
+    'Login' => 'Giriş',
+    'Join' => 'Qeydiyyat',
+    'New Products' => 'Yeni Məhsullar',
+    'Discounted Products' => 'Endirimli Məhsullar',
+    'Contact' => 'Əlaqə',
+    'My Account' => 'Hesabım',
+    'My Cart' => 'Səbət',
+    'Welcome to E-shop!' => 'E-Shopa Xoş Gəldiniz!',
+    'All Categories' => 'Kateqoriyalar',
+    'Enter your keyword' => 'Axtardığınız hər şey burada',
+    'Hello' => 'Salam',
+    'Sign Out' => 'Çıxış',
+    'Create An Account' => 'Hesab yarat',
+    'Empty, there is no product' => 'Səbət boşdur',
+    'View Cart' => 'Səbətə Bax',
+    'Categories' => 'Kateqoriyalar',
+    'Home' => 'ANA SƏHİFƏ',
+    'Shop' => 'Mağaza',
+    'Sales' => 'Satışlar',
+    'Orders' => 'Sifarişlər',
 
 ];

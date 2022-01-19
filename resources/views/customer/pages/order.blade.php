@@ -57,7 +57,7 @@
                             <tr>
                                 <th class="empty" colspan="3"></th>
                                 <th>@lang('content.SHIPPING')</th>
-                                <td colspan="2">@lang('content.Free Shipping')</td>
+                                <td colspan="2">{{ $order->shipping }} AZN</td>
                             </tr>
                             <tr>
                                 <th class="empty" colspan="3"></th>

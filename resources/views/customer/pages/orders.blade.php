@@ -32,17 +32,26 @@
                                                         <label class="label label-danger">{{ $order->order_amount }} ‎₼</label>
                                                     </td>
                                                     <td>
-                                                        @if($order->status=='Pending')
-                                                            <label class="label label-danger">{{ $order->status }}</label>
+                                                        @if ($order->status == 'Payment is expected')
+                                                            <label class="badge badge-warning">@lang('content.Payment is expected')</label>
                                                         @elseif($order->status=='Your order has been received')
-                                                            <label class="label label-success">@lang('content.Your order has been received')</label>
-                                                        @elseif($order->status=='Your order has been received')
-                                                            <label class="label label-success">@lang('content.Your order has been received')</label>
+                                                            <label class="badge badge-info">@lang('admin.Pending')</label>
+                                                        @elseif($order->status=='Payment approved')
+                                                            <label class="badge badge-info">@lang('content.Payment approved')</label>
+                                                        @elseif($order->status=='Cargoed')
+                                                            <label class="badge badge-info">@lang('content.Cargoed')</label>
+                                                        @elseif($order->status=='Order completed')
+                                                            <label class="badge badge-success">@lang('content.Order completed')</label>
+                                                        @elseif($order->status=='Your order is canceled')
+                                                            <label class="badge badge-danger">@lang('content.Your order is canceled')</label>
+                                                        @else
+                                                            <label class="badge badge-secondary">{{ $order->status }}</label>
                                                         @endif
                                                     </td>
                                                     <td>{{ $order->created_at }}</td>
-                                                    <td><a href="{{ route('order', $order->id) }}"
-                                                           class="btn btn-xs btn-warning">@lang('content.View')</a>
+                                                    <td>
+                                                        <a href="{{ route('order', $order->id) }}" class="btn btn-xs btn-warning">@lang('content.View')</a>
+                                                        {!! $order->order_status == "PENDING" ? "<a href='" . route('complete', $order->id) . "' class='btn btn-xs btn-success'>Ödənişi tamamla</a>" : ""  !!}
                                                     </td>
                                                 </tr>
                                             @endforeach
