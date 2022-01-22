@@ -96,7 +96,7 @@ class OrderController extends Controller
 
             Order::where('id',  $id)->update($data);
             $order = Order::with('cart.cart_products.product')->find($id);
-            // Mail::to($user->email)->send(new OrderStatus($order));
+            Mail::to($user->email)->send(new OrderStatus($order));
         }
 
         return redirect()
